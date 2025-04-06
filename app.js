@@ -28,7 +28,17 @@ window.onload = () => {
 
     const { data: cards, error } = await supabaseClient
       .from("cards")
-      .select("*")
+      .select(`
+        id,
+        name,
+        stack_cost,
+        card_versions (
+          version_id,
+          card_art (
+            image_url
+          )
+        )
+      `)
       .ilike("name", `%${query}%`);
 
     if (error) {
@@ -41,29 +51,21 @@ window.onload = () => {
       return;
     }
 
-    // Loop through each matching card
-    cards.forEach(async card => {
+    cards.forEach(card => {
       const li = document.createElement("li");
       li.classList.add("card-item");
 
       li.innerHTML = `<strong>${card.name}</strong> – Stack Cost: ${card.stack_cost}`;
 
-      const { data: versions, error: versionError } = await supabaseClient
-        .rpc('get_card_versions', { p_card_name: card.name });
+      const version = card.card_versions?.[0];
+      const imageUrl = version?.card_art?.[0]?.image_url;
 
-      if (versionError) {
-        console.error(`Error getting version for ${card.name}:`, versionError);
-      } else if (versions && versions.length > 0) {
-        const version = versions[0];
-        const imageUrl = version.artworks?.[0];
-
-        if (imageUrl) {
-          const img = document.createElement("img");
-          img.src = imageUrl;
-          img.alt = card.name;
-          img.classList.add("card-image");
-          li.appendChild(img);
-        }
+      if (imageUrl) {
+        const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = card.name;
+        img.classList.add("card-image");
+        li.appendChild(img);
       }
 
       resultsList.appendChild(li);
