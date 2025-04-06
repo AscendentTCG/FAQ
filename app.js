@@ -32,37 +32,36 @@ window.onload = () => {
       .ilike("name", `%${query}%`);
 
     if (error) {
-      resultsList.innerHTML = `<li>Error: ${error.message}</li>`;
+      resultsList.innerHTML = `<li class="error-msg">Error: ${error.message}</li>`;
       return;
     }
 
     if (!cards || cards.length === 0) {
-      resultsList.innerHTML = `<li>No results found</li>`;
+      resultsList.innerHTML = `<li class="no-results">No results found</li>`;
       return;
     }
 
     // Loop through each matching card
     cards.forEach(async card => {
       const li = document.createElement("li");
+      li.classList.add("card-item");
 
-      // Add basic info
       li.innerHTML = `<strong>${card.name}</strong> – Stack Cost: ${card.stack_cost}`;
 
-      // Fetch version details (for image, etc.)
       const { data: versions, error: versionError } = await supabaseClient
         .rpc('get_card_versions', { card_name: card.name });
 
       if (versionError) {
         console.error(`Error getting version for ${card.name}:`, versionError);
       } else if (versions && versions.length > 0) {
-        const firstVersion = versions[0];
-        const imageUrl = firstVersion.artworks?.[0];
+        const version = versions[0];
+        const imageUrl = version.artworks?.[0];
 
         if (imageUrl) {
           const img = document.createElement("img");
           img.src = imageUrl;
           img.alt = card.name;
-          img.style = "max-width: 100%; margin-top: 8px; border-radius: 6px;";
+          img.classList.add("card-image");
           li.appendChild(img);
         }
       }
