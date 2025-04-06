@@ -1,29 +1,40 @@
 const SUPABASE_URL = "https://iwwkdrqwdniigeeogwie.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3d2tkcnF3ZG5paWdlZW9nd2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MDUzODMsImV4cCI6MjA1NjA4MTM4M30.K_cPRK6eksBxUFR5lqclNByn7Ia2IEoq7w46HPaxwPg";
 
-async function searchCards() {
-  const query = document.getElementById("searchInput").value;
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/cards?name=ilike.*${query}*`, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
-    }
-  });
+// DOM elements
+const searchInput = document.getElementById("searchInput");
+const resultsList = document.getElementById("results");
 
-  const data = await response.json();
-  displayResults(data);
-}
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value;
 
-function displayResults(cards) {
-  const results = document.getElementById("results");
-  results.innerHTML = "";
+  if (!query) {
+    resultsList.innerHTML = "";
+    return;
+  }
 
-  cards.forEach(card => {
+  const { data, error } = await supabase
+    .from("cards")
+    .select("*")
+    .ilike("name", `%${query}%`);
+
+  resultsList.innerHTML = "";
+
+  if (error) {
+    resultsList.innerHTML = `<li>Error: ${error.message}</li>`;
+    return;
+  }
+
+  if (data.length === 0) {
+    resultsList.innerHTML = `<li>No results found</li>`;
+    return;
+  }
+
+  data.forEach(card => {
     const li = document.createElement("li");
-    li.textContent = `${card.name} – ${card.rulings || "No rulings available"}`;
-    results.appendChild(li);
+    li.textContent = `${card.name} - Stack Cost: ${card.stack_cost}`;
+    resultsList.appendChild(li);
   });
-}
-
-document.getElementById("searchInput").addEventListener("input", searchCards);
+});
