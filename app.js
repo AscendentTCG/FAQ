@@ -5,24 +5,30 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// DOM elements
 const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
 const resultsList = document.getElementById("results");
 
-searchInput.addEventListener("input", async () => {
-  const query = searchInput.value;
-
-  if (!query) {
-    resultsList.innerHTML = "";
-    return;
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    searchCards();
   }
+});
+
+searchBtn.addEventListener("click", () => {
+  searchCards();
+});
+
+async function searchCards() {
+  const query = searchInput.value.trim();
+  resultsList.innerHTML = "";
+
+  if (!query) return;
 
   const { data, error } = await supabaseClient
     .from("cards")
     .select("*")
     .ilike("name", `%${query}%`);
-
-  resultsList.innerHTML = "";
 
   if (error) {
     resultsList.innerHTML = `<li>Error: ${error.message}</li>`;
@@ -36,7 +42,8 @@ searchInput.addEventListener("input", async () => {
 
   data.forEach(card => {
     const li = document.createElement("li");
-    li.textContent = `${card.name} - Stack Cost: ${card.stack_cost}`;
+    li.textContent = `${card.name} – Stack Cost: ${card.stack_cost}`;
     resultsList.appendChild(li);
   });
-});
+}
+
