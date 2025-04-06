@@ -26,7 +26,7 @@ window.onload = () => {
 
     if (!query) return;
 
-    const { data, error } = await supabaseClient
+    const { data: cards, error } = await supabaseClient
       .from("cards")
       .select("*")
       .ilike("name", `%${query}%`);
@@ -36,14 +36,37 @@ window.onload = () => {
       return;
     }
 
-    if (data.length === 0) {
+    if (!cards || cards.length === 0) {
       resultsList.innerHTML = `<li>No results found</li>`;
       return;
     }
 
-    data.forEach(card => {
+    // Loop through each matching card
+    cards.forEach(async card => {
       const li = document.createElement("li");
-      li.textContent = `${card.name} – Stack Cost: ${card.stack_cost}`;
+
+      // Add basic info
+      li.innerHTML = `<strong>${card.name}</strong> – Stack Cost: ${card.stack_cost}`;
+
+      // Fetch version details (for image, etc.)
+      const { data: versions, error: versionError } = await supabaseClient
+        .rpc('get_card_versions', { card_name: card.name });
+
+      if (versionError) {
+        console.error(`Error getting version for ${card.name}:`, versionError);
+      } else if (versions && versions.length > 0) {
+        const firstVersion = versions[0];
+        const imageUrl = firstVersion.artworks?.[0];
+
+        if (imageUrl) {
+          const img = document.createElement("img");
+          img.src = imageUrl;
+          img.alt = card.name;
+          img.style = "max-width: 100%; margin-top: 8px; border-radius: 6px;";
+          li.appendChild(img);
+        }
+      }
+
       resultsList.appendChild(li);
     });
   }
