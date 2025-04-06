@@ -7,14 +7,16 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Card Search</h1>
-  <input type="text" id="searchInput" placeholder="Search for a card..." />
-  <button id="searchBtn">Search</button>
-  <ul id="results"></ul>
+  <div class="container">
+    <h1>Ascendent FAQ</h1>
+    <div class="search-area">
+      <input type="text" id="searchInput" placeholder="Search for a card..." />
+      <button id="searchBtn">Search</button>
+    </div>
+    <ul id="results"></ul>
+  </div>
 
-  <!-- Supabase client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <!-- Your app logic -->
   <script src="app.js"></script>
 </body>
 </html>
