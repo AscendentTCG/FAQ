@@ -49,7 +49,7 @@ window.onload = () => {
       li.innerHTML = `<strong>${card.name}</strong> – Stack Cost: ${card.stack_cost}`;
 
       const { data: versions, error: versionError } = await supabaseClient
-        .rpc('get_card_versions', { card_name: card.name });
+        .rpc('get_card_versions', { p_card_name: card.name });
 
       if (versionError) {
         console.error(`Error getting version for ${card.name}:`, versionError);
