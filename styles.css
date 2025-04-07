@@ -57,6 +57,22 @@ body {
   color: #000;
 }
 
+.discord-btn {
+  background-color: #5865F2; /* Discord blurple */
+  color: white;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+  display: inline-block;
+  border: none;
+}
+
+.discord-btn:hover {
+  background-color: #4752c4;
+}
 /* Main Container */
 .container {
   max-width: 600px;
