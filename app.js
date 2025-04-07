@@ -116,20 +116,31 @@ window.onload = () => {
 
       if (faqError) {
         console.error(`FAQ error for ${card.name}:`, faqError);
-      } else if (faqs && faqs.length > 0) {
+      } else {
+        const faqSection = document.createElement("div");
+        faqSection.classList.add("faq-block");
+
         const faqList = document.createElement("ul");
         faqList.classList.add("faq-list");
 
-        faqs.forEach(faq => {
-          const faqItem = document.createElement("li");
-          faqItem.innerHTML = `
-            <strong>Q:</strong> ${faq.question}<br/>
-            <strong>A:</strong> ${faq.answer}
-          `;
-          faqList.appendChild(faqItem);
-        });
+        if (faqs && faqs.length > 0) {
+          faqs.forEach(faq => {
+            const faqItem = document.createElement("li");
+            faqItem.innerHTML = `
+              <strong>Q:</strong> ${faq.question}<br/>
+              <strong>A:</strong> ${faq.answer}
+            `;
+            faqList.appendChild(faqItem);
+          });
+          faqSection.appendChild(faqList);
+        } else {
+          const noFaqMsg = document.createElement("p");
+          noFaqMsg.classList.add("no-results");
+          noFaqMsg.textContent = "No FAQs available for this card.";
+          faqSection.appendChild(noFaqMsg);
+        }
 
-        li.appendChild(faqList);
+        li.appendChild(faqSection);
       }
 
       resultsList.appendChild(li);
