@@ -37,10 +37,10 @@ body {
   text-decoration: underline;
 }
 
-/* Main Site Button (fixed styling) */
+/* Main Site Button */
 .main-site-btn {
-  background-color: #333;
-  color: #fff;
+  background-color: #e0e0e0;
+  color: #333;
   padding: 8px 14px;
   border-radius: 4px;
   font-weight: 500;
@@ -48,12 +48,12 @@ body {
   text-decoration: none;
   transition: background-color 0.2s ease-in-out;
   display: inline-block;
-  cursor: pointer;
+  border: 1px solid #ccc;
 }
 
 .main-site-btn:hover {
-  background-color: #555;
-  color: #fff;
+  background-color: #d5d5d5;
+  color: #000;
 }
 
 /* Main Container */
