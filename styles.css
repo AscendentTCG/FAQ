@@ -1,11 +1,11 @@
-/* Global Reset */
+/* Reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Page Styling */
+/* Page layout */
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9f9f9;
@@ -14,7 +14,6 @@ body {
   text-align: center;
 }
 
-/* Main Container */
 .container {
   max-width: 600px;
   margin: 0 auto;
@@ -26,7 +25,7 @@ h1 {
   margin-bottom: 24px;
 }
 
-/* Search Section */
+/* Search input + button */
 .search-area {
   position: relative;
   display: flex;
@@ -36,7 +35,6 @@ h1 {
   margin: 0 auto 20px auto;
 }
 
-/* Input Field */
 #searchInput {
   flex: 1;
   padding: 10px;
@@ -46,7 +44,6 @@ h1 {
   outline: none;
 }
 
-/* Search Button */
 #searchBtn {
   padding: 10px 16px;
   font-size: 16px;
@@ -62,7 +59,7 @@ h1 {
   background-color: #555;
 }
 
-/* Suggestions Dropdown */
+/* Autocomplete dropdown */
 .suggestions-list {
   position: absolute;
   top: 100%;
@@ -90,7 +87,7 @@ h1 {
   background-color: #f0f0f0;
 }
 
-/* Results */
+/* Search results */
 #results {
   list-style: none;
   padding: 0;
@@ -102,14 +99,38 @@ h1 {
   margin-bottom: 32px;
 }
 
-/* Card Image Styling */
+/* Card image */
 .card-image {
   max-width: 100%;
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-/* Error or Empty Message Styling */
+/* FAQ block */
+.faq-list {
+  text-align: left;
+  margin: 20px auto;
+  max-width: 600px;
+  padding: 0;
+  list-style: none;
+}
+
+.faq-list li {
+  margin-bottom: 16px;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  line-height: 1.5;
+}
+
+.faq-list strong {
+  display: inline-block;
+  margin-right: 6px;
+  color: #333;
+}
+
+/* Feedback messages */
 .error-msg,
 .no-results {
   color: #888;
