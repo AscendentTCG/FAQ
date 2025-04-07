@@ -63,18 +63,18 @@ ul {
 }
 
 .card-item {
-  background: white;
-  border: 1px solid #ddd;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 32px;
+  box-shadow: none;
+  text-align: center;
 }
 
 .card-image {
   max-width: 100%;
-  margin-top: 8px;
-  border-radius: 6px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .error-msg {
