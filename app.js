@@ -54,21 +54,20 @@ window.onload = () => {
     cards.forEach(card => {
       const li = document.createElement("li");
       li.classList.add("card-item");
-
-      li.innerHTML = `<strong>${card.name}</strong> – Stack Cost: ${card.stack_cost}`;
-
+    
       const version = card.card_versions?.[0];
       const imageUrl = version?.card_art?.[0]?.image_url;
-
+    
       if (imageUrl) {
         const img = document.createElement("img");
         img.src = imageUrl;
         img.alt = card.name;
         img.classList.add("card-image");
         li.appendChild(img);
+        resultsList.appendChild(li);
       }
-
-      resultsList.appendChild(li);
     });
+
+    
   }
 };
