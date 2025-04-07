@@ -58,8 +58,8 @@ body {
 }
 
 .discord-btn {
-  background-color: #5865F2; /* Discord blurple */
-  color: white;
+  background-color: #e4e8ff; /* soft light purple */
+  color: #2c2c74;
   padding: 8px 14px;
   border-radius: 4px;
   font-weight: 500;
@@ -67,12 +67,14 @@ body {
   text-decoration: none;
   transition: background-color 0.2s ease-in-out;
   display: inline-block;
-  border: none;
+  border: 1px solid #c8cdee;
 }
 
 .discord-btn:hover {
-  background-color: #4752c4;
+  background-color: #d7dcf9;
+  color: #1a1a5e;
 }
+
 /* Main Container */
 .container {
   max-width: 600px;
