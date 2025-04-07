@@ -1,11 +1,11 @@
-/* Reset */
+/* Global Reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Page layout */
+/* Page Styling */
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9f9f9;
@@ -14,6 +14,49 @@ body {
   text-align: center;
 }
 
+/* Top Header Bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.top-bar .left a,
+.top-bar .right a {
+  color: #0056b3;
+  text-decoration: none;
+}
+
+.top-bar .left a:hover,
+.top-bar .right a:hover {
+  text-decoration: underline;
+}
+
+/* Main Site Button (fixed styling) */
+.main-site-btn {
+  background-color: #333;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.main-site-btn:hover {
+  background-color: #555;
+  color: #fff;
+}
+
+/* Main Container */
 .container {
   max-width: 600px;
   margin: 0 auto;
@@ -25,7 +68,7 @@ h1 {
   margin-bottom: 24px;
 }
 
-/* Search input + button */
+/* Search Section */
 .search-area {
   position: relative;
   display: flex;
@@ -35,6 +78,7 @@ h1 {
   margin: 0 auto 20px auto;
 }
 
+/* Input Field */
 #searchInput {
   flex: 1;
   padding: 10px;
@@ -44,6 +88,7 @@ h1 {
   outline: none;
 }
 
+/* Search Button */
 #searchBtn {
   padding: 10px 16px;
   font-size: 16px;
@@ -59,7 +104,7 @@ h1 {
   background-color: #555;
 }
 
-/* Autocomplete dropdown */
+/* Suggestions Dropdown */
 .suggestions-list {
   position: absolute;
   top: 100%;
@@ -87,7 +132,7 @@ h1 {
   background-color: #f0f0f0;
 }
 
-/* Search results */
+/* Results */
 #results {
   list-style: none;
   padding: 0;
@@ -99,21 +144,29 @@ h1 {
   margin-bottom: 32px;
 }
 
-/* Card image */
+/* Card Image Styling */
 .card-image {
   max-width: 100%;
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-/* FAQ block */
+/* Error or Empty Message Styling */
+.error-msg,
+.no-results {
+  color: #888;
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
+/* FAQ List Styling */
 .faq-list {
   text-align: left;
   margin: 20px auto;
   max-width: 700px;
   padding: 0;
   list-style: none;
-  font-size: 1.05rem; /* bump up size slightly */
+  font-size: 1.05rem;
   line-height: 1.6;
 }
 
@@ -131,53 +184,3 @@ h1 {
   font-weight: 600;
   margin-bottom: 4px;
 }
-
-.faq-list strong::after {
-  content: attr(data-label);
-  font-weight: bold;
-}
-
-/* Feedback messages */
-.error-msg,
-.no-results {
-  color: #888;
-  font-size: 1rem;
-  margin-top: 20px;
-}
-
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-  background-color: #f1f1f1;
-  border-bottom: 1px solid #ddd;
-  font-size: 0.95rem;
-  color: #333;
-}
-
-.top-bar .left a,
-.top-bar .right a {
-  color: #0056b3;
-  text-decoration: none;
-}
-
-.top-bar .left a:hover,
-.top-bar .right a:hover {
-  text-decoration: underline;
-}
-
-.main-site-btn {
-  background-color: #333;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.main-site-btn:hover {
-  background-color: #555;
-}
-
