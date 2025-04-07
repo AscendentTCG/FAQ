@@ -24,6 +24,7 @@ body {
   border-bottom: 1px solid #ddd;
   font-size: 0.95rem;
   color: #333;
+  flex-wrap: wrap;
 }
 
 .top-bar .left a,
@@ -37,7 +38,7 @@ body {
   text-decoration: underline;
 }
 
-/* Main Site Button */
+/* Main Site Button – Light Version */
 .main-site-btn {
   background-color: #e0e0e0;
   color: #333;
@@ -183,4 +184,32 @@ h1 {
   color: #222;
   font-weight: 600;
   margin-bottom: 4px;
+}
+
+/* Responsive Styling for Mobile */
+@media (max-width: 600px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px 20px;
+    text-align: left;
+  }
+
+  .top-bar .left,
+  .top-bar .right {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .top-bar .right {
+    justify-content: flex-end;
+  }
+
+  .main-site-btn {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
 }
