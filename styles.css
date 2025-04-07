@@ -203,31 +203,28 @@ h1 {
   font-weight: 600;
   margin-bottom: 4px;
 }
-
-/* Responsive Styling for Mobile */
 @media (max-width: 600px) {
   .top-bar {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    align-items: stretch;
+    gap: 10px;
     padding: 16px 20px;
-    text-align: left;
+    text-align: center;
   }
 
   .top-bar .left,
   .top-bar .right {
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
   }
 
-  .top-bar .right {
-    justify-content: flex-end;
-  }
-
+  .discord-btn,
   .main-site-btn {
-    padding: 8px 10px;
-    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    font-size: 1rem;
   }
 }
+
