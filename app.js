@@ -57,7 +57,7 @@ window.onload = () => {
       if (activeSuggestionIndex >= 0 && suggestions[activeSuggestionIndex]) {
         searchInput.value = suggestions[activeSuggestionIndex].textContent;
         suggestionsList.innerHTML = "";
-        displayCard(suggestions[activeSuggestionIndex].textContent);
+        displayCard(searchInput.value.trim());
       } else {
         displayCard(searchInput.value.trim());
       }
@@ -109,6 +109,29 @@ window.onload = () => {
       img.classList.add("card-image");
 
       li.appendChild(img);
+
+      // Fetch FAQs
+      const { data: faqs, error: faqError } = await supabaseClient
+        .rpc('get_card_faqs', { p_card_name: card.name });
+
+      if (faqError) {
+        console.error(`FAQ error for ${card.name}:`, faqError);
+      } else if (faqs && faqs.length > 0) {
+        const faqList = document.createElement("ul");
+        faqList.classList.add("faq-list");
+
+        faqs.forEach(faq => {
+          const faqItem = document.createElement("li");
+          faqItem.innerHTML = `
+            <strong>Q:</strong> ${faq.question}<br/>
+            <strong>A:</strong> ${faq.answer}
+          `;
+          faqList.appendChild(faqItem);
+        });
+
+        li.appendChild(faqList);
+      }
+
       resultsList.appendChild(li);
     }
   }
