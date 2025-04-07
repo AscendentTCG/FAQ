@@ -12,12 +12,21 @@ body {
   color: #333;
   padding: 40px 20px;
   text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full height */
 }
+
 
 /* Main Container */
 .container {
   max-width: 600px;
   margin: 0 auto;
+  flex-grow: 1; /* This pushes footer down */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Title */
