@@ -9,65 +9,107 @@ window.onload = () => {
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
   const resultsList = document.getElementById("results");
+  const suggestionsList = document.getElementById("suggestions");
+
+  let activeSuggestionIndex = -1;
+  let currentSuggestions = [];
+
+  searchInput.addEventListener("input", async () => {
+    const query = searchInput.value.trim();
+    suggestionsList.innerHTML = "";
+    currentSuggestions = [];
+
+    if (!query) return;
+
+    const { data: cards, error } = await supabaseClient
+      .from("cards")
+      .select("name")
+      .ilike("name", `%${query}%`)
+      .limit(5);
+
+    if (error || !cards) return;
+
+    currentSuggestions = cards;
+
+    cards.forEach(card => {
+      const li = document.createElement("li");
+      li.textContent = card.name;
+      li.addEventListener("click", () => {
+        searchInput.value = card.name;
+        suggestionsList.innerHTML = "";
+        displayCard(card.name);
+      });
+      suggestionsList.appendChild(li);
+    });
+  });
 
   searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      searchCards();
+    const suggestions = suggestionsList.querySelectorAll("li");
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeSuggestionIndex = (activeSuggestionIndex + 1) % suggestions.length;
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      activeSuggestionIndex = (activeSuggestionIndex - 1 + suggestions.length) % suggestions.length;
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (activeSuggestionIndex >= 0 && suggestions[activeSuggestionIndex]) {
+        searchInput.value = suggestions[activeSuggestionIndex].textContent;
+        suggestionsList.innerHTML = "";
+        displayCard(suggestions[activeSuggestionIndex].textContent);
+      } else {
+        displayCard(searchInput.value.trim());
+      }
     }
+
+    suggestions.forEach((li, index) => {
+      li.style.backgroundColor = index === activeSuggestionIndex ? "#eee" : "";
+    });
   });
 
   searchBtn.addEventListener("click", () => {
-    searchCards();
+    suggestionsList.innerHTML = "";
+    displayCard(searchInput.value.trim());
   });
 
-  async function searchCards() {
-    const query = searchInput.value.trim();
+  async function displayCard(cardName) {
     resultsList.innerHTML = "";
-
-    if (!query) return;
 
     const { data: cards, error } = await supabaseClient
       .from("cards")
       .select(`
         id,
         name,
-        stack_cost,
         card_versions (
-          version_id,
           card_art (
             image_url
           )
         )
       `)
-      .ilike("name", `%${query}%`);
+      .eq("name", cardName)
+      .limit(1);
 
-    if (error) {
-      resultsList.innerHTML = `<li class="error-msg">Error: ${error.message}</li>`;
-      return;
-    }
-
-    if (!cards || cards.length === 0) {
+    if (error || !cards || cards.length === 0) {
       resultsList.innerHTML = `<li class="no-results">No results found</li>`;
       return;
     }
 
-    cards.forEach(card => {
+    const card = cards[0];
+    const version = card.card_versions?.[0];
+    const imageUrl = version?.card_art?.[0]?.image_url;
+
+    if (imageUrl) {
       const li = document.createElement("li");
       li.classList.add("card-item");
-    
-      const version = card.card_versions?.[0];
-      const imageUrl = version?.card_art?.[0]?.image_url;
-    
-      if (imageUrl) {
-        const img = document.createElement("img");
-        img.src = imageUrl;
-        img.alt = card.name;
-        img.classList.add("card-image");
-        li.appendChild(img);
-        resultsList.appendChild(li);
-      }
-    });
 
-    
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = card.name;
+      img.classList.add("card-image");
+
+      li.appendChild(img);
+      resultsList.appendChild(li);
+    }
   }
 };
