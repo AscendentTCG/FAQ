@@ -2,23 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ascendent FAQ</title>
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
-  <script src="app.js" defer></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Ascendent FAQ</h1>
 
-    <div class="search-area">
-      <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
-      <button id="searchBtn">Search</button>
-      <ul id="suggestions" class="suggestions-list"></ul>
+  <!-- Top Header Bar -->
+  <header class="top-bar">
+    <div class="left">
+      <span>Community FAQ</span> – 
+      <a href="https://discord.gg/DpgTp6vN" target="_blank" rel="noopener noreferrer">
+        Ask more on Discord
+      </a>
     </div>
+    <div class="right">
+      <a href="https://worldofkylia.com/" target="_blank" rel="noopener noreferrer" class="main-site-btn">
+        Main Website →
+      </a>
+    </div>
+  </header>
 
-    <ul id="results"></ul>
+  <!-- Page Title -->
+  <h1>Ascendent FAQ</h1>
+
+  <!-- Search Area -->
+  <div class="search-area">
+    <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
+    <button id="searchBtn">Search</button>
+    <ul id="suggestions" class="suggestions-list"></ul>
   </div>
+
+  <!-- Search Results -->
+  <ul id="results"></ul>
+
+  <!-- Supabase SDK & App Script -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
