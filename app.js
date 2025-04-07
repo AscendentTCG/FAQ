@@ -128,7 +128,7 @@ window.onload = () => {
             const faqItem = document.createElement("li");
             faqItem.innerHTML = `
               <strong>Q:</strong> ${faq.question}<br/>
-              <strong>A:</strong> ${faq.answer}
+               <div><span><strong>A:</strong></span> ${faq.answer}</div>
             `;
             faqList.appendChild(faqItem);
           });
