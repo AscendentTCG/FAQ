@@ -9,25 +9,82 @@ window.onload = () => {
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
   const resultsList = document.getElementById("results");
+  const suggestionsList = document.getElementById("suggestions");
 
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") searchCards();
-  });
+  let activeSuggestionIndex = -1;
+  let currentSuggestions = [];
 
-  searchBtn.addEventListener("click", () => searchCards());
-
-  async function searchCards() {
+  // Autocomplete suggestions
+  searchInput.addEventListener("input", async () => {
     const query = searchInput.value.trim();
-    resultsList.innerHTML = "";
+    suggestionsList.innerHTML = "";
+    currentSuggestions = [];
 
     if (!query) return;
+
+    const { data: cards, error } = await supabaseClient
+      .from("cards")
+      .select("name")
+      .ilike("name", `%${query}%`)
+      .limit(5);
+
+    if (error || !cards) return;
+
+    currentSuggestions = cards;
+
+    cards.forEach(card => {
+      const li = document.createElement("li");
+      li.textContent = card.name;
+      li.addEventListener("click", () => {
+        searchInput.value = card.name;
+        suggestionsList.innerHTML = "";
+        searchCards(card.name);
+      });
+      suggestionsList.appendChild(li);
+    });
+  });
+
+  // Keyboard navigation for suggestions
+  searchInput.addEventListener("keydown", (e) => {
+    const suggestions = suggestionsList.querySelectorAll("li");
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeSuggestionIndex = (activeSuggestionIndex + 1) % suggestions.length;
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      activeSuggestionIndex = (activeSuggestionIndex - 1 + suggestions.length) % suggestions.length;
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (activeSuggestionIndex >= 0 && suggestions[activeSuggestionIndex]) {
+        const selectedName = suggestions[activeSuggestionIndex].textContent;
+        searchInput.value = selectedName;
+        suggestionsList.innerHTML = "";
+        searchCards(selectedName);
+      } else {
+        searchCards(searchInput.value.trim());
+      }
+    }
+
+    suggestions.forEach((li, index) => {
+      li.style.backgroundColor = index === activeSuggestionIndex ? "#eee" : "";
+    });
+  });
+
+  searchBtn.addEventListener("click", () => {
+    suggestionsList.innerHTML = "";
+    searchCards(searchInput.value.trim());
+  });
+
+  // Full result logic with image, FAQ, mechanics toggle
+  async function searchCards(cardName) {
+    resultsList.innerHTML = "";
 
     const { data: cards, error } = await supabaseClient
       .from("cards")
       .select(`
         id,
         name,
-        stack_cost,
         card_versions (
           version_id,
           card_art (
@@ -35,99 +92,93 @@ window.onload = () => {
           )
         )
       `)
-      .ilike("name", `%${query}%`);
+      .eq("name", cardName)
+      .limit(1);
 
-    if (error) {
-      resultsList.innerHTML = `<li class="error-msg">Error: ${error.message}</li>`;
-      return;
-    }
-
-    if (!cards || cards.length === 0) {
+    if (error || !cards || cards.length === 0) {
       resultsList.innerHTML = `<li class="no-results">No results found</li>`;
       return;
     }
 
-    for (const card of cards) {
-      const li = document.createElement("li");
-      li.classList.add("card-item");
+    const card = cards[0];
+    const version = card.card_versions?.[0];
+    const imageUrl = version?.card_art?.[0]?.image_url;
 
-      // Show image
-      const version = card.card_versions?.[0];
-      const imageUrl = version?.card_art?.[0]?.image_url;
+    const li = document.createElement("li");
+    li.classList.add("card-item");
 
-      if (imageUrl) {
-        const img = document.createElement("img");
-        img.src = imageUrl;
-        img.alt = card.name;
-        img.classList.add("card-image");
-        li.appendChild(img);
-      }
-
-      // Create toggle buttons
-      const toggleWrapper = document.createElement("div");
-      toggleWrapper.classList.add("toggle-wrapper");
-
-      const faqBtn = document.createElement("button");
-      faqBtn.textContent = "FAQ";
-      faqBtn.classList.add("toggle-btn", "active");
-
-      const mechBtn = document.createElement("button");
-      mechBtn.textContent = "Mechanics";
-      mechBtn.classList.add("toggle-btn");
-
-      toggleWrapper.appendChild(faqBtn);
-      toggleWrapper.appendChild(mechBtn);
-      li.appendChild(toggleWrapper);
-
-      // Fetch FAQs
-      const { data: faqs, error: faqError } = await supabaseClient
-        .rpc("get_card_faqs", { p_card_name: card.name });
-
-      const faqSection = document.createElement("ul");
-      faqSection.classList.add("faq-list");
-
-      if (faqError) {
-        console.error(`FAQ error for ${card.name}:`, faqError);
-      } else if (faqs && faqs.length > 0) {
-        faqs.forEach(faq => {
-          const faqItem = document.createElement("li");
-          faqItem.innerHTML = `
-            <strong>Q:</strong> ${faq.question}<br/>
-            <strong>A:</strong> ${faq.answer}
-          `;
-          faqSection.appendChild(faqItem);
-        });
-      } else {
-        const empty = document.createElement("li");
-        empty.textContent = "No FAQ available.";
-        faqSection.appendChild(empty);
-      }
-
-      li.appendChild(faqSection);
-
-      // Mechanics placeholder
-      const mechSection = document.createElement("div");
-      mechSection.classList.add("mechanics-section");
-      mechSection.textContent = "Mechanics info coming soon.";
-      mechSection.style.display = "none";
-      li.appendChild(mechSection);
-
-      // Toggle functionality
-      faqBtn.addEventListener("click", () => {
-        faqBtn.classList.add("active");
-        mechBtn.classList.remove("active");
-        faqSection.style.display = "block";
-        mechSection.style.display = "none";
-      });
-
-      mechBtn.addEventListener("click", () => {
-        mechBtn.classList.add("active");
-        faqBtn.classList.remove("active");
-        faqSection.style.display = "none";
-        mechSection.style.display = "block";
-      });
-
-      resultsList.appendChild(li);
+    if (imageUrl) {
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = card.name;
+      img.classList.add("card-image");
+      li.appendChild(img);
     }
+
+    // Create toggle buttons
+    const toggleWrapper = document.createElement("div");
+    toggleWrapper.classList.add("toggle-wrapper");
+
+    const faqBtn = document.createElement("button");
+    faqBtn.textContent = "FAQ";
+    faqBtn.classList.add("toggle-btn", "active");
+
+    const mechBtn = document.createElement("button");
+    mechBtn.textContent = "Mechanics";
+    mechBtn.classList.add("toggle-btn");
+
+    toggleWrapper.appendChild(faqBtn);
+    toggleWrapper.appendChild(mechBtn);
+    li.appendChild(toggleWrapper);
+
+    // Fetch FAQs
+    const { data: faqs, error: faqError } = await supabaseClient
+      .rpc("get_card_faqs", { p_card_name: card.name });
+
+    const faqSection = document.createElement("ul");
+    faqSection.classList.add("faq-list");
+
+    if (faqError) {
+      console.error(`FAQ error for ${card.name}:`, faqError);
+    } else if (faqs && faqs.length > 0) {
+      faqs.forEach(faq => {
+        const faqItem = document.createElement("li");
+        faqItem.innerHTML = `
+          <strong>Q:</strong> ${faq.question}<br/>
+          <strong>A:</strong> ${faq.answer}
+        `;
+        faqSection.appendChild(faqItem);
+      });
+    } else {
+      const noFaq = document.createElement("li");
+      noFaq.textContent = "No FAQ available.";
+      faqSection.appendChild(noFaq);
+    }
+
+    li.appendChild(faqSection);
+
+    // Mechanics placeholder
+    const mechSection = document.createElement("div");
+    mechSection.classList.add("mechanics-section");
+    mechSection.textContent = "Mechanics info coming soon.";
+    mechSection.style.display = "none";
+    li.appendChild(mechSection);
+
+    // Toggle logic
+    faqBtn.addEventListener("click", () => {
+      faqBtn.classList.add("active");
+      mechBtn.classList.remove("active");
+      faqSection.style.display = "block";
+      mechSection.style.display = "none";
+    });
+
+    mechBtn.addEventListener("click", () => {
+      mechBtn.classList.add("active");
+      faqBtn.classList.remove("active");
+      faqSection.style.display = "none";
+      mechSection.style.display = "block";
+    });
+
+    resultsList.appendChild(li);
   }
 };
