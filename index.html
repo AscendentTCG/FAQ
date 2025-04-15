@@ -19,47 +19,58 @@
     </nav>
   </header>
 
-    <!-- Page Title -->
-  <h1>Ascendent FAQ</h1>
+  <div class="container">
 
-  <!-- Card Search Section -->
-  <section id="search">
-    <div class="search-area">
-      <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
-      <button id="searchBtn">Search</button>
-      <ul id="suggestions" class="suggestions-list"></ul>
-    </div>
+    <h1>Ascendent FAQ</h1>
 
-    <ul id="results"></ul>
-  </section>
+    <!-- Card Search Section -->
+    <section id="search">
+      <div class="search-area">
+        <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
+        <button id="searchBtn">Search</button>
+        <ul id="suggestions" class="suggestions-list"></ul>
+      </div>
 
-  <!-- Mechanics Section -->
-  <section id="mechanics">
-    <h2>Game Mechanics</h2>
-    <p>Explore common mechanics, keywords, and timing rules in Ascendent.</p>
-    <ul class="faq-list">
-      <li><strong>Remove:</strong> Spend Genki from a card to power up abilities.</li>
-      <li><strong>Crushing Blow:</strong> If this attack hits, deal additional damage.</li>
-      <li><strong>Passive:</strong> These effects are always active and don’t require activation.</li>
-      <li><strong>Timing Tier:</strong> Determines when in the game flow a card may be used.</li>
-      <!-- Add more as needed -->
-    </ul>
-  </section>
+      <ul id="results"></ul>
+    </section>
 
-  <!-- Rules Section -->
-  <section id="rules">
-    <h2>How to Play</h2>
-    <p>Learn about turn structure, phases, and general gameplay flow.</p>
-    <ul class="faq-list">
-      <li><strong>Start Phase:</strong> Resolve ongoing effects and draw a card.</li>
-      <li><strong>Main Phase:</strong> Play cards, activate abilities, and build your stack.</li>
-      <li><strong>Combat Phase:</strong> Initiate attacks and apply damage.</li>
-      <li><strong>End Phase:</strong> Clean up and end your turn.</li>
-    </ul>
-  </section>
+    <!-- Mechanics Section -->
+    <section id="mechanics">
+      <h2>Game Mechanics</h2>
+      <p>Explore common mechanics, keywords, and timing rules in Ascendent.</p>
+      <ul class="faq-list">
+        <li><strong>Remove:</strong> Spend Genki from a card to power up abilities.</li>
+        <li><strong>Crushing Blow:</strong> If this attack hits, deal additional damage.</li>
+        <li><strong>Passive:</strong> These effects are always active and don’t require activation.</li>
+        <li><strong>Timing Tier:</strong> Determines when in the game flow a card may be used.</li>
+      </ul>
+    </section>
 
-  
+    <!-- Rules Section -->
+    <section id="rules">
+      <h2>How to Play</h2>
+      <p>Learn about turn structure, phases, and general gameplay flow.</p>
+      <ul class="faq-list">
+        <li><strong>Start Phase:</strong> Resolve ongoing effects and draw a card.</li>
+        <li><strong>Main Phase:</strong> Play cards, activate abilities, and build your stack.</li>
+        <li><strong>Combat Phase:</strong> Initiate attacks and apply damage.</li>
+        <li><strong>End Phase:</strong> Clean up and end your turn.</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="https://discord.gg/DpgTp6vN" target="_blank" rel="noopener noreferrer" class="discord-btn">
+      Ask more on Discord
+    </a>
+    <a href="https://worldofkylia.com/" target="_blank" rel="noopener noreferrer" class="main-site-btn">
+      Main Website
+    </a>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="app.js"></script>
 </body>
-
-  
 </html>
