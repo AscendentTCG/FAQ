@@ -139,7 +139,7 @@ h1, h2 {
   margin-bottom: 4px;
 }
 
-.main-site-btn, .discord-btn {
+.main-site-btn {
   background-color: #e0e0e0;
   color: #333;
   padding: 8px 14px;
@@ -152,9 +152,27 @@ h1, h2 {
   border: 1px solid #ccc;
 }
 
-.main-site-btn:hover, .discord-btn:hover {
+.discord-btn {
+  background-color: #e4e8ff;
+  color: #2c2c74;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+  display: inline-block;
+  border: 1px solid #c8cdee;
+}
+
+.main-site-btn:hover {
   background-color: #d5d5d5;
   color: #000;
+}
+
+.discord-btn:hover {
+  background-color: #d7dcf9;
+  color: #1a1a5e;
 }
 
 .footer {
