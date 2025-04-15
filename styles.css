@@ -273,7 +273,7 @@ h1, h2 {
   text-align: center;
 }
 
-#rules.content-section {
+.content-section.active {
   display: block;
 }
 
@@ -284,10 +284,6 @@ h1, h2 {
   color: #444;
   line-height: 1.6;
   text-align: center;
-}
-
-.hidden {
-  display: none;
 }
 
 @keyframes fadeIn {
