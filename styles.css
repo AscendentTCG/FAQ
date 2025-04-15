@@ -5,40 +5,30 @@
   padding: 0;
 }
 
-/* Page Styling */
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9f9f9;
   color: #333;
-  text-align: center;
-
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  margin: 0;
 }
 
+main {
+  flex-grow: 1;
+}
 
-
-/* Main Container */
 .container {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 40px 20px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
-
-/* Title */
-h1 {
-  font-size: 2.5rem;
+h1, h2 {
+  text-align: center;
   margin-bottom: 24px;
 }
 
-/* Search Section */
 .search-area {
   position: relative;
   display: flex;
@@ -48,7 +38,6 @@ h1 {
   margin: 0 auto 20px auto;
 }
 
-/* Input Field */
 #searchInput {
   flex: 1;
   padding: 10px;
@@ -58,7 +47,6 @@ h1 {
   outline: none;
 }
 
-/* Search Button */
 #searchBtn {
   padding: 10px 16px;
   font-size: 16px;
@@ -74,7 +62,6 @@ h1 {
   background-color: #555;
 }
 
-/* Suggestions Dropdown */
 .suggestions-list {
   position: absolute;
   top: 100%;
@@ -102,7 +89,6 @@ h1 {
   background-color: #f0f0f0;
 }
 
-/* Results */
 #results {
   list-style: none;
   padding: 0;
@@ -114,22 +100,20 @@ h1 {
   margin-bottom: 32px;
 }
 
-/* Card Image Styling */
 .card-image {
   max-width: 100%;
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-/* Error or Empty Message Styling */
 .error-msg,
 .no-results {
   color: #888;
   font-size: 1rem;
   margin-top: 20px;
+  text-align: center;
 }
 
-/* FAQ List Styling */
 .faq-list {
   text-align: left;
   margin: 20px auto;
@@ -155,7 +139,6 @@ h1 {
   margin-bottom: 4px;
 }
 
-/* Buttons: Main Site & Discord */
 .main-site-btn {
   background-color: #e0e0e0;
   color: #333;
@@ -192,9 +175,8 @@ h1 {
   color: #1a1a5e;
 }
 
-/* Footer Section */
 .footer {
-  margin-top: 60px; 
+  margin-top: 60px;
   padding: 20px;
   text-align: center;
   display: flex;
@@ -245,7 +227,71 @@ h1 {
   line-height: 1.6;
 }
 
-/* Mobile-Friendly Adjustments */
+/* Navbar */
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px 24px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-list li a {
+  text-decoration: none;
+  color: #222;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-list li a:hover {
+  background-color: #f1f1f1;
+  color: #000;
+}
+
+/* Section Visibility Control */
+.content-section {
+  display: none;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  animation: fadeIn 0.3s ease-in-out;
+  text-align: center;
+}
+
+.content-section.active {
+  display: block;
+}
+
+.rules-intro {
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.6;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile */
 @media (max-width: 600px) {
   .footer {
     flex-direction: column;
@@ -257,5 +303,10 @@ h1 {
     width: 100%;
     font-size: 1rem;
     padding: 12px;
+  }
+
+  .nav-list {
+    flex-direction: column;
+    gap: 16px;
   }
 }

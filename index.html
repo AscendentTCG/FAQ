@@ -3,30 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ascendent FAQ</title>
+  <title>Ascendant FAQ</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <nav>
+      <ul class="nav-list">
+        <li><a href="#" data-target="search">Card Search</a></li>
+        <li><a href="#" data-target="mechanics">Mechanics</a></li>
+        <li><a href="#" data-target="rules">How to Play</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <!-- Page Title -->
-  <h1>Ascendent FAQ</h1>
+  <main>
+    <!-- Card Search Section -->
+    <section id="search" class="content-section">
+      <h1>Ascendant FAQ</h1>
+      <div class="search-area">
+        <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
+        <button id="searchBtn">Search</button>
+        <ul id="suggestions" class="suggestions-list"></ul>
+      </div>
+      <ul id="results"></ul>
+    </section>
 
-  <!-- Search Area -->
-  <div class="search-area">
-    <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
-    <button id="searchBtn">Search</button>
-    <ul id="suggestions" class="suggestions-list"></ul>
-  </div>
+    <!-- Mechanics Section -->
+    <section id="mechanics" class="content-section">
+      <h2>Game Mechanics</h2>
+      <p>Explore common keywords, tags, and categories</p>
+      <ul class="faq-list">
+        <li><strong>Keywords</strong> Keywords are special properties cards can have. </li>
+        <li><strong>Tags</strong> These help indicate what the card does</li>
+        <li><strong>Categories</strong> These are descriptors for the card in addition to the tag </li>
+      </ul>
+    </section>
 
-  <!-- Search Results -->
-  <ul id="results"></ul>
+    <!-- Rules Section (default visible) -->
+    <section id="rules" class="content-section active">
+      <h2>Learn how to play Ascendant here!</h2>
+      <p>Welcome to the Hadrai'da: Ascendant Community FAQ. For any further questions or requests, feel free to check out the discord and ask us there.</p>
+      <ul class="faq-list">
+        <li><strong>Deck Construction</strong> Learn how to make decks and figure out your limits here.</li>
+        <li><strong>Basic Gameplay</strong> Go through some basics of playing the game here. </li>
+        <li><strong>Card Timing</strong> For more in-depth details on when you can use cards. </li>
+        <li><strong>Formats</strong> Learn about the different formats and gameplay options Ascendent has to offer. </li>
+      </ul>
+    </section>
+  </main>
 
-  <!-- Supabase SDK & App Script -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="app.js"></script>
-
+  <!-- Footer -->
   <footer class="footer">
-    <a href="https://discord.gg/DpgTp6vN" target="_blank" rel="noopener noreferrer" class="discord-btn">
+    <a href="https://discord.gg/TbuqVZPs" target="_blank" rel="noopener noreferrer" class="discord-btn">
       Ask more on Discord
     </a>
     <a href="https://worldofkylia.com/" target="_blank" rel="noopener noreferrer" class="main-site-btn">
@@ -34,8 +64,27 @@
     </a>
   </footer>
 
-  
-</body>
+  <!-- Supabase SDK & App Script -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Toggle sections via navbar using active class
+    document.querySelectorAll(".nav-list a").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const targetId = link.dataset.target;
 
-  
+        document.querySelectorAll(".content-section").forEach(sec => {
+          sec.classList.remove("active");
+        });
+
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          targetSection.classList.add("active");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    });
+  </script>
+</body>
 </html>
