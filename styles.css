@@ -246,15 +246,16 @@ h1, h2 {
 }
 
 /* Section Visibility Control */
-.hidden {
-  display: none;
-}
-
 .content-section {
+  display: none;
   max-width: 800px;
   margin: 0 auto;
   padding: 30px 20px;
   animation: fadeIn 0.3s ease-in-out;
+}
+
+#rules.content-section {
+  display: block;
 }
 
 @keyframes fadeIn {
