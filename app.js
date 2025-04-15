@@ -3,6 +3,11 @@ const { createClient } = supabase;
 const SUPABASE_URL = "https://iwwkdrqwdniigeeogwie.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3d2tkcnF3ZG5paWdlZW9nd2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MDUzODMsImV4cCI6MjA1NjA4MTM4M30.K_cPRK6eksBxUFR5lqclNByn7Ia2IEoq7w46HPaxwPg";
 
+const { createClient } = supabase;
+
+const SUPABASE_URL = "https://iwwkdrqwdniigeeogwie.supabase.co";
+const SUPABASE_KEY = "YOUR_SUPABASE_KEY"; // Replace with your actual key
+
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 window.onload = () => {
@@ -76,7 +81,7 @@ window.onload = () => {
     searchCards(searchInput.value.trim());
   });
 
-  // Full result logic with image, FAQ, mechanics toggle
+  // Main card search/display logic
   async function searchCards(cardName) {
     resultsList.innerHTML = "";
 
@@ -85,6 +90,7 @@ window.onload = () => {
       .select(`
         id,
         name,
+        card_effects,
         card_versions (
           version_id,
           card_art (
@@ -115,7 +121,7 @@ window.onload = () => {
       li.appendChild(img);
     }
 
-    // Create toggle buttons
+    // Toggle buttons
     const toggleWrapper = document.createElement("div");
     toggleWrapper.classList.add("toggle-wrapper");
 
@@ -127,11 +133,16 @@ window.onload = () => {
     mechBtn.textContent = "Mechanics";
     mechBtn.classList.add("toggle-btn");
 
+    const infoBtn = document.createElement("button");
+    infoBtn.textContent = "Card Information";
+    infoBtn.classList.add("toggle-btn");
+
     toggleWrapper.appendChild(faqBtn);
     toggleWrapper.appendChild(mechBtn);
+    toggleWrapper.appendChild(infoBtn);
     li.appendChild(toggleWrapper);
 
-    // Fetch FAQs
+    // FAQ section
     const { data: faqs, error: faqError } = await supabaseClient
       .rpc("get_card_faqs", { p_card_name: card.name });
 
@@ -157,26 +168,52 @@ window.onload = () => {
 
     li.appendChild(faqSection);
 
-    // Mechanics placeholder
+    // Mechanics section (placeholder)
     const mechSection = document.createElement("div");
     mechSection.classList.add("mechanics-section");
     mechSection.textContent = "Mechanics info coming soon.";
     mechSection.style.display = "none";
     li.appendChild(mechSection);
 
+    // Card Information section
+    const infoSection = document.createElement("div");
+    infoSection.classList.add("mechanics-section");
+    infoSection.innerHTML = `
+      <strong>Card Text:</strong><br/>
+      ${card.card_effects || "No text available."}
+    `;
+    infoSection.style.display = "none";
+    li.appendChild(infoSection);
+
     // Toggle logic
     faqBtn.addEventListener("click", () => {
       faqBtn.classList.add("active");
       mechBtn.classList.remove("active");
+      infoBtn.classList.remove("active");
+
       faqSection.style.display = "block";
       mechSection.style.display = "none";
+      infoSection.style.display = "none";
     });
 
     mechBtn.addEventListener("click", () => {
       mechBtn.classList.add("active");
       faqBtn.classList.remove("active");
+      infoBtn.classList.remove("active");
+
       faqSection.style.display = "none";
       mechSection.style.display = "block";
+      infoSection.style.display = "none";
+    });
+
+    infoBtn.addEventListener("click", () => {
+      infoBtn.classList.add("active");
+      faqBtn.classList.remove("active");
+      mechBtn.classList.remove("active");
+
+      faqSection.style.display = "none";
+      mechSection.style.display = "none";
+      infoSection.style.display = "block";
     });
 
     resultsList.appendChild(li);
