@@ -152,6 +152,11 @@ h1, h2 {
   border: 1px solid #ccc;
 }
 
+.main-site-btn:hover {
+  background-color: #d5d5d5;
+  color: #000;
+}
+
 .discord-btn {
   background-color: #e4e8ff;
   color: #2c2c74;
@@ -163,11 +168,6 @@ h1, h2 {
   transition: background-color 0.2s ease-in-out;
   display: inline-block;
   border: 1px solid #c8cdee;
-}
-
-.main-site-btn:hover {
-  background-color: #d5d5d5;
-  color: #000;
 }
 
 .discord-btn:hover {
@@ -270,10 +270,20 @@ h1, h2 {
   margin: 0 auto;
   padding: 30px 20px;
   animation: fadeIn 0.3s ease-in-out;
+  text-align: center;
 }
 
 #rules.content-section {
   display: block;
+}
+
+.rules-intro {
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.6;
+  text-align: center;
 }
 
 @keyframes fadeIn {
