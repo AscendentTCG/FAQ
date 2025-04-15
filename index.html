@@ -7,35 +7,31 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
   <!-- Top Navigation Bar -->
   <header class="navbar">
     <nav>
       <ul class="nav-list">
-        <li><a href="#search">Card Search</a></li>
-        <li><a href="#mechanics">Mechanics</a></li>
-        <li><a href="#rules">How to Play</a></li>
+        <li><a href="#" data-target="search">Card Search</a></li>
+        <li><a href="#" data-target="mechanics">Mechanics</a></li>
+        <li><a href="#" data-target="rules">How to Play</a></li>
       </ul>
     </nav>
   </header>
 
-  <div class="container">
-
-    <h1>Ascendent FAQ</h1>
-
+  <main>
     <!-- Card Search Section -->
-    <section id="search">
+    <section id="search" class="content-section hidden">
+      <h1>Ascendent FAQ</h1>
       <div class="search-area">
         <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
         <button id="searchBtn">Search</button>
         <ul id="suggestions" class="suggestions-list"></ul>
       </div>
-
       <ul id="results"></ul>
     </section>
 
     <!-- Mechanics Section -->
-    <section id="mechanics">
+    <section id="mechanics" class="content-section hidden">
       <h2>Game Mechanics</h2>
       <p>Explore common mechanics, keywords, and timing rules in Ascendent.</p>
       <ul class="faq-list">
@@ -47,7 +43,7 @@
     </section>
 
     <!-- Rules Section -->
-    <section id="rules">
+    <section id="rules" class="content-section">
       <h2>How to Play</h2>
       <p>Learn about turn structure, phases, and general gameplay flow.</p>
       <ul class="faq-list">
@@ -57,7 +53,7 @@
         <li><strong>End Phase:</strong> Clean up and end your turn.</li>
       </ul>
     </section>
-  </div>
+  </main>
 
   <!-- Footer -->
   <footer class="footer">
@@ -69,8 +65,24 @@
     </a>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Supabase SDK & App Script -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="app.js"></script>
+  <script>
+    // Toggle sections via navbar
+    document.querySelectorAll(".nav-list a").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const targetId = link.dataset.target;
+
+        document.querySelectorAll(".content-section").forEach(sec => {
+          sec.classList.add("hidden");
+        });
+
+        document.getElementById(targetId).classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+  </script>
 </body>
 </html>
