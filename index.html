@@ -11,7 +11,7 @@
   <header class="navbar">
     <nav>
       <ul class="nav-list">
-        <li><a href="#" data-target="search">Card Search</a></li>
+        <li><a href="card-search.html">Card Search</a></li>
         <li><a href="#" data-target="mechanics">Mechanics</a></li>
         <li><a href="#" data-target="rules">How to Play</a></li>
       </ul>
@@ -19,17 +19,6 @@
   </header>
 
   <main>
-    <!-- Card Search Section -->
-    <section id="search" class="content-section">
-      <h1>Ascendant FAQ</h1>
-      <div class="search-area">
-        <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
-        <button id="searchBtn">Search</button>
-        <ul id="suggestions" class="suggestions-list"></ul>
-      </div>
-      <ul id="results"></ul>
-    </section>
-
     <!-- Mechanics Section -->
     <section id="mechanics" class="content-section hidden">
       <h2>Game Mechanics</h2>
@@ -41,14 +30,14 @@
             Keywords are special properties cards can have.
           </a>
         </li>
-    
+
         <li>
           <a href="/FAQ/tags.html" class="faq-card-link">
             <strong>Tags</strong><br>
             These help indicate what the card does.
           </a>
         </li>
-    
+
         <li>
           <a href="/FAQ/categories.html" class="faq-card-link">
             <strong>Categories</strong><br>
@@ -57,8 +46,6 @@
         </li>
       </ul>
     </section>
-
-
 
     <!-- Rules Section (default visible) -->
     <section id="rules" class="content-section active">
@@ -71,21 +58,21 @@
             Learn how to make decks and figure out your limits here.
           </a>
         </li>
-      
+
         <li>
           <a href="/FAQ/basic-gameplay.html" class="faq-card-link">
             <strong>Basic Gameplay</strong><br>
             Go through some basics of playing the game here.
           </a>
         </li>
-      
+
         <li>
           <a href="/FAQ/card-timing.html" class="faq-card-link">
             <strong>Card Timing</strong><br>
             For more in-depth details on when you can use cards.
           </a>
         </li>
-      
+
         <li>
           <a href="/FAQ/formats.html" class="faq-card-link">
             <strong>Formats</strong><br>
@@ -93,7 +80,6 @@
           </a>
         </li>
       </ul>
-
     </section>
   </main>
 
@@ -107,12 +93,8 @@
     </a>
   </footer>
 
-  <!-- Supabase SDK & App Script -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="app.js"></script>
   <script>
-    // Toggle sections via navbar using active class
-    document.querySelectorAll(".nav-list a").forEach(link => {
+    document.querySelectorAll(".nav-list a[data-target]").forEach(link => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const targetId = link.dataset.target;
