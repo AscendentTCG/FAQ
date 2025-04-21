@@ -44,7 +44,7 @@ window.onload = () => {
     });
   });
 
-  // Keyboard navigation for suggestions
+  // Keyboard navigation
   searchInput.addEventListener("keydown", (e) => {
     const suggestions = suggestionsList.querySelectorAll("li");
 
@@ -57,17 +57,17 @@ window.onload = () => {
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (activeSuggestionIndex >= 0 && suggestions[activeSuggestionIndex]) {
-        const selectedName = suggestions[activeSuggestionIndex].textContent;
-        searchInput.value = selectedName;
+        const selected = suggestions[activeSuggestionIndex].textContent;
+        searchInput.value = selected;
         suggestionsList.innerHTML = "";
-        searchCards(selectedName);
+        searchCards(selected);
       } else {
         searchCards(searchInput.value.trim());
       }
     }
 
     suggestions.forEach((li, index) => {
-      li.style.backgroundColor = index === activeSuggestionIndex ? "#eee" : "";
+      li.classList.toggle("active", index === activeSuggestionIndex);
     });
   });
 
@@ -76,8 +76,19 @@ window.onload = () => {
     searchCards(searchInput.value.trim());
   });
 
-  // Main card search/display logic
   async function searchCards(cardName) {
+    if (!cardName) return;
+
+    // Update URL
+    const encoded = encodeURIComponent(cardName);
+    const newUrl = `${window.location.pathname}?card=${encoded}`;
+    history.replaceState(null, "", newUrl);
+
+    displayCard(cardName);
+  }
+
+  // Display card info
+  async function displayCard(cardName) {
     resultsList.innerHTML = "";
 
     const { data: cards, error } = await supabaseClient
@@ -116,101 +127,23 @@ window.onload = () => {
       li.appendChild(img);
     }
 
-    // Toggle buttons
-    const toggleWrapper = document.createElement("div");
-    toggleWrapper.classList.add("toggle-wrapper");
-
-    const faqBtn = document.createElement("button");
-    faqBtn.textContent = "FAQ";
-    faqBtn.classList.add("toggle-btn", "active");
-
-    const mechBtn = document.createElement("button");
-    mechBtn.textContent = "Mechanics";
-    mechBtn.classList.add("toggle-btn");
-
-    const infoBtn = document.createElement("button");
-    infoBtn.textContent = "Card Information";
-    infoBtn.classList.add("toggle-btn");
-
-    toggleWrapper.appendChild(faqBtn);
-    toggleWrapper.appendChild(mechBtn);
-    toggleWrapper.appendChild(infoBtn);
-    li.appendChild(toggleWrapper);
-
-    // FAQ section
-    const { data: faqs, error: faqError } = await supabaseClient
-      .rpc("get_card_faqs", { p_card_name: card.name });
-
-    const faqSection = document.createElement("ul");
-    faqSection.classList.add("faq-list");
-
-    if (faqError) {
-      console.error(`FAQ error for ${card.name}:`, faqError);
-    } else if (faqs && faqs.length > 0) {
-      faqs.forEach(faq => {
-        const faqItem = document.createElement("li");
-        faqItem.innerHTML = `
-          <strong>Q:</strong> ${faq.question}<br/>
-          <strong>A:</strong> ${faq.answer}
-        `;
-        faqSection.appendChild(faqItem);
-      });
-    } else {
-      const noFaq = document.createElement("li");
-      noFaq.textContent = "No FAQ available.";
-      faqSection.appendChild(noFaq);
-    }
-
-    li.appendChild(faqSection);
-
-    // Mechanics section (placeholder)
-    const mechSection = document.createElement("div");
-    mechSection.classList.add("mechanics-section");
-    mechSection.textContent = "Mechanics info coming soon.";
-    mechSection.style.display = "none";
-    li.appendChild(mechSection);
-
-    // Card Information section
-    const infoSection = document.createElement("div");
-    infoSection.classList.add("mechanics-section");
-    infoSection.innerHTML = `
+    const info = document.createElement("div");
+    info.classList.add("mechanics-section");
+    info.innerHTML = `
       <strong>Card Text:</strong><br/>
       ${card.card_effects || "No text available."}
     `;
-    infoSection.style.display = "none";
-    li.appendChild(infoSection);
-
-    // Toggle logic
-    faqBtn.addEventListener("click", () => {
-      faqBtn.classList.add("active");
-      mechBtn.classList.remove("active");
-      infoBtn.classList.remove("active");
-
-      faqSection.style.display = "block";
-      mechSection.style.display = "none";
-      infoSection.style.display = "none";
-    });
-
-    mechBtn.addEventListener("click", () => {
-      mechBtn.classList.add("active");
-      faqBtn.classList.remove("active");
-      infoBtn.classList.remove("active");
-
-      faqSection.style.display = "none";
-      mechSection.style.display = "block";
-      infoSection.style.display = "none";
-    });
-
-    infoBtn.addEventListener("click", () => {
-      infoBtn.classList.add("active");
-      faqBtn.classList.remove("active");
-      mechBtn.classList.remove("active");
-
-      faqSection.style.display = "none";
-      mechSection.style.display = "none";
-      infoSection.style.display = "block";
-    });
+    li.appendChild(info);
 
     resultsList.appendChild(li);
+  }
+
+  // Trigger card display on page load if URL has ?card=
+  const urlParams = new URLSearchParams(window.location.search);
+  const cardParam = urlParams.get("card");
+  if (cardParam) {
+    const decoded = decodeURIComponent(cardParam);
+    searchInput.value = decoded;
+    searchCards(decoded);
   }
 };
