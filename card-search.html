@@ -40,25 +40,5 @@
       Main Website
     </a>
   </footer>
-
-  <script>
-    // Parse card name from URL and trigger search
-    const urlParams = new URLSearchParams(window.location.search);
-    const cardName = urlParams.get("card");
-    if (cardName && typeof searchCards === "function") {
-      searchCards(decodeURIComponent(cardName));
-    }
-
-    // Update URL when a card is searched
-    window.searchCards = function(cardName) {
-      const encodedName = encodeURIComponent(cardName);
-      const newUrl = `${window.location.pathname}?card=${encodedName}`;
-      history.replaceState(null, "", newUrl);
-
-      if (typeof displayCard === "function") {
-        displayCard(cardName);
-      }
-    };
-  </script>
 </body>
 </html>
