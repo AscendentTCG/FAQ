@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Card Search - Ascendent FAQ</title>
+  <title>Card Search | Ascendant FAQ</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
   <!-- Top Navigation Bar -->
@@ -16,16 +18,20 @@
     </nav>
   </header>
 
-  <main class="container">
-    <h1>Card Search</h1>
-    <div class="search-area">
-      <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
-      <button id="searchBtn">Search</button>
-      <ul id="suggestions" class="suggestions-list"></ul>
-    </div>
-    <ul id="results"></ul>
+  <main>
+    <!-- Card Search Section -->
+    <section class="content-section active">
+      <h1>Ascendant Card Search</h1>
+      <div class="search-area">
+        <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
+        <button id="searchBtn">Search</button>
+        <ul id="suggestions" class="suggestions-list"></ul>
+      </div>
+      <ul id="results"></ul>
+    </section>
   </main>
 
+  <!-- Footer -->
   <footer class="footer">
     <a href="https://discord.gg/TbuqVZPs" target="_blank" rel="noopener noreferrer" class="discord-btn">
       Ask more on Discord
@@ -35,21 +41,24 @@
     </a>
   </footer>
 
-  <!-- Supabase SDK & App Script -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="app.js"></script>
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const params = new URLSearchParams(window.location.search);
-      const cardName = params.get("card");
-      if (cardName) {
-        const input = document.getElementById("searchInput");
-        input.value = cardName;
-        const event = new Event("input");
-        input.dispatchEvent(event);
-        document.getElementById("searchBtn").click();
+    // Parse card name from URL and trigger search
+    const urlParams = new URLSearchParams(window.location.search);
+    const cardName = urlParams.get("card");
+    if (cardName && typeof searchCards === "function") {
+      searchCards(decodeURIComponent(cardName));
+    }
+
+    // Update URL when a card is searched
+    window.searchCards = function(cardName) {
+      const encodedName = encodeURIComponent(cardName);
+      const newUrl = `${window.location.pathname}?card=${encodedName}`;
+      history.replaceState(null, "", newUrl);
+
+      if (typeof displayCard === "function") {
+        displayCard(cardName);
       }
-    });
+    };
   </script>
 </body>
 </html>
