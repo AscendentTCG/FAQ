@@ -14,7 +14,7 @@ window.onload = () => {
   let activeSuggestionIndex = -1;
   let currentSuggestions = [];
 
-  // Autocomplete suggestions
+  // Autocomplete
   searchInput.addEventListener("input", async () => {
     const query = searchInput.value.trim();
     suggestionsList.innerHTML = "";
@@ -22,17 +22,15 @@ window.onload = () => {
 
     if (!query) return;
 
-    const { data: cards, error } = await supabaseClient
+    const { data: cards } = await supabaseClient
       .from("cards")
       .select("name")
       .ilike("name", `%${query}%`)
       .limit(5);
 
-    if (error || !cards) return;
+    currentSuggestions = cards || [];
 
-    currentSuggestions = cards;
-
-    cards.forEach(card => {
+    currentSuggestions.forEach(card => {
       const li = document.createElement("li");
       li.textContent = card.name;
       li.addEventListener("click", () => {
@@ -44,7 +42,7 @@ window.onload = () => {
     });
   });
 
-  // Keyboard navigation
+  // Arrow key nav + Enter
   searchInput.addEventListener("keydown", (e) => {
     const suggestions = suggestionsList.querySelectorAll("li");
 
@@ -57,17 +55,17 @@ window.onload = () => {
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (activeSuggestionIndex >= 0 && suggestions[activeSuggestionIndex]) {
-        const selected = suggestions[activeSuggestionIndex].textContent;
-        searchInput.value = selected;
+        const selectedName = suggestions[activeSuggestionIndex].textContent;
+        searchInput.value = selectedName;
         suggestionsList.innerHTML = "";
-        searchCards(selected);
+        searchCards(selectedName);
       } else {
         searchCards(searchInput.value.trim());
       }
     }
 
-    suggestions.forEach((li, index) => {
-      li.classList.toggle("active", index === activeSuggestionIndex);
+    suggestions.forEach((li, i) => {
+      li.classList.toggle("active", i === activeSuggestionIndex);
     });
   });
 
@@ -76,38 +74,28 @@ window.onload = () => {
     searchCards(searchInput.value.trim());
   });
 
-  async function searchCards(cardName) {
+  // Publicly callable
+  window.searchCards = async (cardName) => {
     if (!cardName) return;
 
-    // Update URL
     const encoded = encodeURIComponent(cardName);
     const newUrl = `${window.location.pathname}?card=${encoded}`;
-    history.replaceState(null, "", newUrl);
+    window.history.replaceState(null, "", newUrl);
 
-    displayCard(cardName);
-  }
-
-  // Display card info
-  async function displayCard(cardName) {
     resultsList.innerHTML = "";
 
-    const { data: cards, error } = await supabaseClient
+    const { data: cards } = await supabaseClient
       .from("cards")
       .select(`
-        id,
-        name,
-        card_effects,
+        id, name, card_effects,
         card_versions (
-          version_id,
-          card_art (
-            image_url
-          )
+          card_art ( image_url )
         )
       `)
       .eq("name", cardName)
       .limit(1);
 
-    if (error || !cards || cards.length === 0) {
+    if (!cards || cards.length === 0) {
       resultsList.innerHTML = `<li class="no-results">No results found</li>`;
       return;
     }
@@ -127,23 +115,98 @@ window.onload = () => {
       li.appendChild(img);
     }
 
-    const info = document.createElement("div");
-    info.classList.add("mechanics-section");
-    info.innerHTML = `
-      <strong>Card Text:</strong><br/>
-      ${card.card_effects || "No text available."}
-    `;
-    li.appendChild(info);
+    const toggleWrapper = document.createElement("div");
+    toggleWrapper.classList.add("toggle-wrapper");
+
+    const faqBtn = document.createElement("button");
+    faqBtn.textContent = "FAQ";
+    faqBtn.classList.add("toggle-btn", "active");
+
+    const mechBtn = document.createElement("button");
+    mechBtn.textContent = "Mechanics";
+    mechBtn.classList.add("toggle-btn");
+
+    const infoBtn = document.createElement("button");
+    infoBtn.textContent = "Card Info";
+    infoBtn.classList.add("toggle-btn");
+
+    toggleWrapper.appendChild(faqBtn);
+    toggleWrapper.appendChild(mechBtn);
+    toggleWrapper.appendChild(infoBtn);
+    li.appendChild(toggleWrapper);
+
+    // FAQ Section
+    const { data: faqs } = await supabaseClient.rpc("get_card_faqs", {
+      p_card_name: card.name,
+    });
+
+    const faqSection = document.createElement("ul");
+    faqSection.classList.add("faq-list");
+
+    if (faqs?.length) {
+      faqs.forEach(faq => {
+        const item = document.createElement("li");
+        item.innerHTML = `<strong>Q:</strong> ${faq.question}<br/><strong>A:</strong> ${faq.answer}`;
+        faqSection.appendChild(item);
+      });
+    } else {
+      const noFaq = document.createElement("li");
+      noFaq.textContent = "No FAQ available.";
+      faqSection.appendChild(noFaq);
+    }
+
+    li.appendChild(faqSection);
+
+    // Mechanics Section
+    const mechSection = document.createElement("div");
+    mechSection.classList.add("mechanics-section");
+    mechSection.textContent = "Mechanics info coming soon.";
+    mechSection.style.display = "none";
+    li.appendChild(mechSection);
+
+    // Info Section
+    const infoSection = document.createElement("div");
+    infoSection.classList.add("mechanics-section");
+    infoSection.innerHTML = `<strong>Card Text:</strong><br>${card.card_effects || "No text available."}`;
+    infoSection.style.display = "none";
+    li.appendChild(infoSection);
+
+    // Toggle logic
+    faqBtn.addEventListener("click", () => {
+      faqBtn.classList.add("active");
+      mechBtn.classList.remove("active");
+      infoBtn.classList.remove("active");
+      faqSection.style.display = "block";
+      mechSection.style.display = "none";
+      infoSection.style.display = "none";
+    });
+
+    mechBtn.addEventListener("click", () => {
+      mechBtn.classList.add("active");
+      faqBtn.classList.remove("active");
+      infoBtn.classList.remove("active");
+      faqSection.style.display = "none";
+      mechSection.style.display = "block";
+      infoSection.style.display = "none";
+    });
+
+    infoBtn.addEventListener("click", () => {
+      infoBtn.classList.add("active");
+      faqBtn.classList.remove("active");
+      mechBtn.classList.remove("active");
+      faqSection.style.display = "none";
+      mechSection.style.display = "none";
+      infoSection.style.display = "block";
+    });
 
     resultsList.appendChild(li);
-  }
+  };
 
-  // Trigger card display on page load if URL has ?card=
+  // Initial load from URL
   const urlParams = new URLSearchParams(window.location.search);
-  const cardParam = urlParams.get("card");
-  if (cardParam) {
-    const decoded = decodeURIComponent(cardParam);
-    searchInput.value = decoded;
-    searchCards(decoded);
+  const cardFromUrl = urlParams.get("card");
+  if (cardFromUrl) {
+    searchInput.value = decodeURIComponent(cardFromUrl);
+    searchCards(decodeURIComponent(cardFromUrl));
   }
 };
