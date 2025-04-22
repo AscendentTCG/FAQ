@@ -38,16 +38,5 @@
       Main Website
     </a>
   </footer>
-
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const cardName = urlParams.get("card");
-      if (cardName && typeof window.searchCards === "function") {
-        window.searchCards(decodeURIComponent(cardName));
-        document.getElementById("searchInput").value = decodeURIComponent(cardName);
-      }
-    });
-  </script>
 </body>
 </html>
