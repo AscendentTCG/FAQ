@@ -1,10 +1,4 @@
-const { createClient } = supabase;
-
-const SUPABASE_URL = "https://iwwkdrqwdniigeeogwie.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3d2tkcnF3ZG5paWdlZW9nd2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MDUzODMsImV4cCI6MjA1NjA4MTM4M30.K_cPRK6eksBxUFR5lqclNByn7Ia2IEoq7w46HPaxwPg";
-
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-
+// app.js
 window.onload = () => {
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
@@ -42,7 +36,7 @@ window.onload = () => {
     });
   });
 
-  // Arrow key nav + Enter
+  // Arrow nav + Enter
   searchInput.addEventListener("keydown", (e) => {
     const suggestions = suggestionsList.querySelectorAll("li");
 
@@ -74,7 +68,6 @@ window.onload = () => {
     searchCards(searchInput.value.trim());
   });
 
-  // Publicly callable
   window.searchCards = async (cardName) => {
     if (!cardName) return;
 
@@ -135,7 +128,6 @@ window.onload = () => {
     toggleWrapper.appendChild(infoBtn);
     li.appendChild(toggleWrapper);
 
-    // FAQ Section
     const { data: faqs } = await supabaseClient.rpc("get_card_faqs", {
       p_card_name: card.name,
     });
@@ -157,21 +149,18 @@ window.onload = () => {
 
     li.appendChild(faqSection);
 
-    // Mechanics Section
     const mechSection = document.createElement("div");
     mechSection.classList.add("mechanics-section");
     mechSection.textContent = "Mechanics info coming soon.";
     mechSection.style.display = "none";
     li.appendChild(mechSection);
 
-    // Info Section
     const infoSection = document.createElement("div");
     infoSection.classList.add("mechanics-section");
     infoSection.innerHTML = `<strong>Card Text:</strong><br>${card.card_effects || "No text available."}`;
     infoSection.style.display = "none";
     li.appendChild(infoSection);
 
-    // Toggle logic
     faqBtn.addEventListener("click", () => {
       faqBtn.classList.add("active");
       mechBtn.classList.remove("active");
@@ -202,7 +191,6 @@ window.onload = () => {
     resultsList.appendChild(li);
   };
 
-  // Initial load from URL
   const urlParams = new URLSearchParams(window.location.search);
   const cardFromUrl = urlParams.get("card");
   if (cardFromUrl) {
