@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
   <script src="supabase.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
   <!-- Top Navigation Bar -->
@@ -18,17 +19,15 @@
     </nav>
   </header>
 
-  <main>
-    <section class="content-section active">
-      <h1>Keyword Explanations</h1>
-      <p>This section details the official explanations for gameplay keywords used in Ascendant cards.</p>
-
-      <input type="text" id="keywordSearch" placeholder="Search keywords..." class="search-box" />
-
-      <ul class="faq-list" id="keywordList">
-        <li>Loading keywords...</li>
-      </ul>
-    </section>
+  <main class="container">
+    <h1>Keywords</h1>
+    <p>This page will eventually explain what Keywords are in Ascendant. For now, search a card to explore what mechanics and information are associated with it.</p>
+    <div class="search-area">
+      <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
+      <button id="searchBtn">Search</button>
+      <ul id="suggestions" class="suggestions-list"></ul>
+    </div>
+    <ul id="results"></ul>
   </main>
 
   <!-- Footer -->
@@ -40,47 +39,5 @@
       Main Website
     </a>
   </footer>
-
-  <script defer>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const listEl = document.getElementById("keywordList");
-      const searchInput = document.getElementById("keywordSearch");
-
-      async function fetchKeywords(filter = "") {
-        const { data, error } = await supabaseClient
-          .from("keywords")
-          .select("name, description")
-          .ilike("name", `%${filter}%`)
-          .order("name", { ascending: true });
-
-        if (error) {
-          listEl.innerHTML = `<li>Error loading keywords</li>`;
-          return;
-        }
-
-        if (data.length === 0) {
-          listEl.innerHTML = `<li>No keywords found</li>`;
-          return;
-        }
-
-        listEl.innerHTML = data
-          .map(
-            (k) => `
-              <li>
-                <strong>${k.name}:</strong><br />
-                ${k.description}
-              </li>
-            `
-          )
-          .join("");
-      }
-
-      searchInput.addEventListener("input", () => {
-        fetchKeywords(searchInput.value.trim());
-      });
-
-      fetchKeywords();
-    });
-  </script>
 </body>
 </html>
