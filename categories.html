@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Categories - Ascendent FAQ</title>
+  <title>Categories | Ascendant FAQ</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script src="supabase.js" defer></script>
 </head>
 <body>
+  <!-- Top Navigation Bar -->
   <header class="navbar">
     <nav>
       <ul class="nav-list">
@@ -15,11 +18,20 @@
     </nav>
   </header>
 
-  <main class="container">
-    <h1>Categories</h1>
-    <p>This page will explain what Categories are in Ascendent.</p>
+  <main>
+    <section class="content-section active">
+      <h1>Category Explanations</h1>
+      <p>This section details the categories that further describe a card's identity or function in Ascendant.</p>
+
+      <input type="text" id="categorySearch" placeholder="Search categories..." class="search-box" />
+
+      <ul class="faq-list" id="categoryList">
+        <li>Loading categories...</li>
+      </ul>
+    </section>
   </main>
 
+  <!-- Footer -->
   <footer class="footer">
     <a href="https://discord.gg/TbuqVZPs" target="_blank" rel="noopener noreferrer" class="discord-btn">
       Ask more on Discord
@@ -28,5 +40,47 @@
       Main Website
     </a>
   </footer>
+
+  <script defer>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const listEl = document.getElementById("categoryList");
+      const searchInput = document.getElementById("categorySearch");
+
+      async function fetchCategories(filter = "") {
+        const { data, error } = await supabaseClient
+          .from("categories")
+          .select("name, description")
+          .ilike("name", `%${filter}%`)
+          .order("name", { ascending: true });
+
+        if (error) {
+          listEl.innerHTML = `<li>Error loading categories</li>`;
+          return;
+        }
+
+        if (data.length === 0) {
+          listEl.innerHTML = `<li>No categories found</li>`;
+          return;
+        }
+
+        listEl.innerHTML = data
+          .map(
+            (cat) => `
+              <li>
+                <strong>${cat.name}:</strong><br />
+                ${cat.description}
+              </li>
+            `
+          )
+          .join("");
+      }
+
+      searchInput.addEventListener("input", () => {
+        fetchCategories(searchInput.value.trim());
+      });
+
+      fetchCategories();
+    });
+  </script>
 </body>
 </html>
