@@ -7,6 +7,8 @@ window.onload = () => {
   let activeSuggestionIndex = -1;
   let currentSuggestions = [];
 
+  const supabaseClient = window.supabaseClient;
+
   // Autocomplete
   searchInput.addEventListener("input", async () => {
     const query = searchInput.value.trim();
@@ -15,11 +17,13 @@ window.onload = () => {
 
     if (!query) return;
 
-    const { data: cards } = await supabaseClient
+    const { data: cards, error } = await supabaseClient
       .from("cards")
       .select("name")
       .ilike("name", `%${query}%`)
       .limit(5);
+
+    if (error) return;
 
     currentSuggestions = cards || [];
 
@@ -35,7 +39,7 @@ window.onload = () => {
     });
   });
 
-  // Arrow key navigation
+  // Arrow nav + Enter
   searchInput.addEventListener("keydown", (e) => {
     const suggestions = suggestionsList.querySelectorAll("li");
 
@@ -67,7 +71,7 @@ window.onload = () => {
     searchCards(searchInput.value.trim());
   });
 
-  // Public card search function
+  // Global function
   window.searchCards = async (cardName) => {
     if (!cardName) return;
 
@@ -128,6 +132,7 @@ window.onload = () => {
     toggleWrapper.appendChild(infoBtn);
     li.appendChild(toggleWrapper);
 
+    // FAQ
     const { data: faqs } = await supabaseClient.rpc("get_card_faqs", {
       p_card_name: card.name,
     });
@@ -149,18 +154,21 @@ window.onload = () => {
 
     li.appendChild(faqSection);
 
+    // Mechanics
     const mechSection = document.createElement("div");
     mechSection.classList.add("mechanics-section");
     mechSection.textContent = "Mechanics info coming soon.";
     mechSection.style.display = "none";
     li.appendChild(mechSection);
 
+    // Card Info
     const infoSection = document.createElement("div");
     infoSection.classList.add("mechanics-section");
     infoSection.innerHTML = `<strong>Card Text:</strong><br>${card.card_effects || "No text available."}`;
     infoSection.style.display = "none";
     li.appendChild(infoSection);
 
+    // Toggle behavior
     faqBtn.addEventListener("click", () => {
       faqBtn.classList.add("active");
       mechBtn.classList.remove("active");
@@ -191,7 +199,7 @@ window.onload = () => {
     resultsList.appendChild(li);
   };
 
-  // Load from URL if query exists
+  // Load from ?card= param
   const urlParams = new URLSearchParams(window.location.search);
   const cardFromUrl = urlParams.get("card");
   if (cardFromUrl) {
