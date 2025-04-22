@@ -7,13 +7,47 @@
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
   <script src="supabase.js" defer></script>
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html">Back to FAQ</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="content-section active">
+      <h1>Keyword Explanations</h1>
+      <p>This section details the official explanations for gameplay keywords used in Ascendant cards.</p>
+
+      <input type="text" id="keywordSearch" placeholder="Search keywords..." class="search-box" />
+
+      <ul class="faq-list" id="keywordList">
+        <li>Loading keywords...</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="https://discord.gg/TbuqVZPs" target="_blank" rel="noopener noreferrer" class="discord-btn">
+      Ask more on Discord
+    </a>
+    <a href="https://worldofkylia.com/" target="_blank" rel="noopener noreferrer" class="main-site-btn">
+      Main Website
+    </a>
+  </footer>
+
   <script defer>
     document.addEventListener("DOMContentLoaded", async () => {
       const listEl = document.getElementById("keywordList");
       const searchInput = document.getElementById("keywordSearch");
 
       async function fetchKeywords(filter = "") {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
           .from("keywords")
           .select("name, description")
           .ilike("name", `%${filter}%`)
@@ -48,38 +82,5 @@
       fetchKeywords();
     });
   </script>
-</head>
-<body>
-  <!-- Top Navigation Bar -->
-  <header class="navbar">
-    <nav>
-      <ul class="nav-list">
-        <li><a href="index.html">Back to FAQ</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <main>
-    <section class="content-section active">
-      <h1>Keyword Explanations</h1>
-      <p>This section details the official explanations for gameplay keywords used in Ascendant cards.</p>
-
-      <input type="text" id="keywordSearch" placeholder="Search keywords..." class="search-box" />
-
-      <ul class="faq-list" id="keywordList">
-        <li>Loading keywords...</li>
-      </ul>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <a href="https://discord.gg/TbuqVZPs" target="_blank" rel="noopener noreferrer" class="discord-btn">
-      Ask more on Discord
-    </a>
-    <a href="https://worldofkylia.com/" target="_blank" rel="noopener noreferrer" class="main-site-btn">
-      Main Website
-    </a>
-  </footer>
 </body>
 </html>
