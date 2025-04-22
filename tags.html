@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tags - Ascendent FAQ</title>
+  <title>Tags | Ascendant FAQ</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script src="supabase.js" defer></script>
 </head>
 <body>
+  <!-- Top Navigation Bar -->
   <header class="navbar">
     <nav>
       <ul class="nav-list">
@@ -15,11 +18,20 @@
     </nav>
   </header>
 
-  <main class="container">
-    <h1>Tags</h1>
-    <p>This page will explain what Tags are in Ascendent.</p>
+  <main>
+    <section class="content-section active">
+      <h1>Tag Explanations</h1>
+      <p>This section details the official descriptions of card tags used in Ascendant.</p>
+
+      <input type="text" id="tagSearch" placeholder="Search tags..." class="search-box" />
+
+      <ul class="faq-list" id="tagList">
+        <li>Loading tags...</li>
+      </ul>
+    </section>
   </main>
 
+  <!-- Footer -->
   <footer class="footer">
     <a href="https://discord.gg/TbuqVZPs" target="_blank" rel="noopener noreferrer" class="discord-btn">
       Ask more on Discord
@@ -28,5 +40,47 @@
       Main Website
     </a>
   </footer>
+
+  <script defer>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const listEl = document.getElementById("tagList");
+      const searchInput = document.getElementById("tagSearch");
+
+      async function fetchTags(filter = "") {
+        const { data, error } = await supabaseClient
+          .from("tags")
+          .select("name, description")
+          .ilike("name", `%${filter}%`)
+          .order("name", { ascending: true });
+
+        if (error) {
+          listEl.innerHTML = `<li>Error loading tags</li>`;
+          return;
+        }
+
+        if (data.length === 0) {
+          listEl.innerHTML = `<li>No tags found</li>`;
+          return;
+        }
+
+        listEl.innerHTML = data
+          .map(
+            (tag) => `
+              <li>
+                <strong>${tag.name}:</strong><br />
+                ${tag.description}
+              </li>
+            `
+          )
+          .join("");
+      }
+
+      searchInput.addEventListener("input", () => {
+        fetchTags(searchInput.value.trim());
+      });
+
+      fetchTags();
+    });
+  </script>
 </body>
 </html>
