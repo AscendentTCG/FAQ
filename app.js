@@ -1,4 +1,3 @@
-// app.js
 window.onload = () => {
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
@@ -36,7 +35,7 @@ window.onload = () => {
     });
   });
 
-  // Arrow nav + Enter
+  // Arrow key navigation
   searchInput.addEventListener("keydown", (e) => {
     const suggestions = suggestionsList.querySelectorAll("li");
 
@@ -68,6 +67,7 @@ window.onload = () => {
     searchCards(searchInput.value.trim());
   });
 
+  // Public card search function
   window.searchCards = async (cardName) => {
     if (!cardName) return;
 
@@ -191,6 +191,7 @@ window.onload = () => {
     resultsList.appendChild(li);
   };
 
+  // Load from URL if query exists
   const urlParams = new URLSearchParams(window.location.search);
   const cardFromUrl = urlParams.get("card");
   if (cardFromUrl) {
