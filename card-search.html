@@ -1,22 +1,12 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Card Search | Ascendant FAQ</title>
+  <title>Categories | Ascendant FAQ</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
-  <script src="app.js" defer></script>
-  <script defer>
-    window.addEventListener("DOMContentLoaded", () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const cardName = urlParams.get("card");
-      if (cardName && typeof window.searchCards === "function") {
-        searchCards(decodeURIComponent(cardName));
-        document.getElementById("searchInput").value = decodeURIComponent(cardName);
-      }
-    });
-  </script>
+  <script src="supabase.js" defer></script>
 </head>
 <body>
   <!-- Top Navigation Bar -->
@@ -29,15 +19,15 @@
   </header>
 
   <main>
-    <!-- Card Search Section -->
     <section class="content-section active">
-      <h1>Ascendant Card Search</h1>
-      <div class="search-area">
-        <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
-        <button id="searchBtn">Search</button>
-        <ul id="suggestions" class="suggestions-list"></ul>
-      </div>
-      <ul id="results"></ul>
+      <h1>Category Explanations</h1>
+      <p>This section details the categories that further describe a card's identity or function in Ascendant.</p>
+
+      <input type="text" id="categorySearch" placeholder="Search categories..." class="search-box" />
+
+      <ul class="faq-list" id="categoryList">
+        <li>Loading categories...</li>
+      </ul>
     </section>
   </main>
 
@@ -50,5 +40,47 @@
       Main Website
     </a>
   </footer>
+
+  <script defer>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const listEl = document.getElementById("categoryList");
+      const searchInput = document.getElementById("categorySearch");
+
+      async function fetchCategories(filter = "") {
+        const { data, error } = await supabaseClient
+          .from("categories")
+          .select("name, description")
+          .ilike("name", `%${filter}%`)
+          .order("name", { ascending: true });
+
+        if (error) {
+          listEl.innerHTML = `<li>Error loading categories</li>`;
+          return;
+        }
+
+        if (data.length === 0) {
+          listEl.innerHTML = `<li>No categories found</li>`;
+          return;
+        }
+
+        listEl.innerHTML = data
+          .map(
+            (cat) => `
+              <li>
+                <strong>${cat.name}:</strong><br />
+                ${cat.description}
+              </li>
+            `
+          )
+          .join("");
+      }
+
+      searchInput.addEventListener("input", () => {
+        fetchCategories(searchInput.value.trim());
+      });
+
+      fetchCategories();
+    });
+  </script>
 </body>
 </html>
