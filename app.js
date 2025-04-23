@@ -1,10 +1,3 @@
-const { createClient } = supabase;
-
-const SUPABASE_URL = "https://iwwkdrqwdniigeeogwie.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3d2tkcnF3ZG5paWdlZW9nd2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MDUzODMsImV4cCI6MjA1NjA4MTM4M30.K_cPRK6eksBxUFR5lqclNByn7Ia2IEoq7w46HPaxwPg";
-
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-
 window.onload = () => {
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
@@ -14,6 +7,8 @@ window.onload = () => {
   let activeSuggestionIndex = -1;
   let currentSuggestions = [];
 
+  const supabaseClient = window.supabaseClient;
+
   // Autocomplete
   searchInput.addEventListener("input", async () => {
     const query = searchInput.value.trim();
@@ -22,11 +17,13 @@ window.onload = () => {
 
     if (!query) return;
 
-    const { data: cards } = await supabaseClient
+    const { data: cards, error } = await supabaseClient
       .from("cards")
       .select("name")
       .ilike("name", `%${query}%`)
       .limit(5);
+
+    if (error) return;
 
     currentSuggestions = cards || [];
 
@@ -42,7 +39,7 @@ window.onload = () => {
     });
   });
 
-  // Arrow key nav + Enter
+  // Arrow nav + Enter
   searchInput.addEventListener("keydown", (e) => {
     const suggestions = suggestionsList.querySelectorAll("li");
 
@@ -74,7 +71,7 @@ window.onload = () => {
     searchCards(searchInput.value.trim());
   });
 
-  // Publicly callable
+  // Global function
   window.searchCards = async (cardName) => {
     if (!cardName) return;
 
@@ -135,7 +132,7 @@ window.onload = () => {
     toggleWrapper.appendChild(infoBtn);
     li.appendChild(toggleWrapper);
 
-    // FAQ Section
+    // FAQ
     const { data: faqs } = await supabaseClient.rpc("get_card_faqs", {
       p_card_name: card.name,
     });
@@ -157,21 +154,21 @@ window.onload = () => {
 
     li.appendChild(faqSection);
 
-    // Mechanics Section
+    // Mechanics
     const mechSection = document.createElement("div");
     mechSection.classList.add("mechanics-section");
     mechSection.textContent = "Mechanics info coming soon.";
     mechSection.style.display = "none";
     li.appendChild(mechSection);
 
-    // Info Section
+    // Card Info
     const infoSection = document.createElement("div");
     infoSection.classList.add("mechanics-section");
     infoSection.innerHTML = `<strong>Card Text:</strong><br>${card.card_effects || "No text available."}`;
     infoSection.style.display = "none";
     li.appendChild(infoSection);
 
-    // Toggle logic
+    // Toggle behavior
     faqBtn.addEventListener("click", () => {
       faqBtn.classList.add("active");
       mechBtn.classList.remove("active");
@@ -202,7 +199,7 @@ window.onload = () => {
     resultsList.appendChild(li);
   };
 
-  // Initial load from URL
+  // Load from ?card= param
   const urlParams = new URLSearchParams(window.location.search);
   const cardFromUrl = urlParams.get("card");
   if (cardFromUrl) {

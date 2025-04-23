@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,17 +6,8 @@
   <title>Card Search | Ascendant FAQ</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script src="supabase.js" defer></script>
   <script src="app.js" defer></script>
-  <script defer>
-    window.addEventListener("DOMContentLoaded", () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const cardName = urlParams.get("card");
-      if (cardName && typeof window.searchCards === "function") {
-        searchCards(decodeURIComponent(cardName));
-        document.getElementById("searchInput").value = decodeURIComponent(cardName);
-      }
-    });
-  </script>
 </head>
 <body>
   <!-- Top Navigation Bar -->
@@ -28,17 +19,14 @@
     </nav>
   </header>
 
-  <main>
-    <!-- Card Search Section -->
-    <section class="content-section active">
-      <h1>Ascendant Card Search</h1>
-      <div class="search-area">
-        <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
-        <button id="searchBtn">Search</button>
-        <ul id="suggestions" class="suggestions-list"></ul>
-      </div>
-      <ul id="results"></ul>
-    </section>
+  <main class="container">
+    <h1>Ascendant Card Search</h1>
+    <div class="search-area">
+      <input type="text" id="searchInput" placeholder="Search for a card..." autocomplete="off" />
+      <button id="searchBtn">Search</button>
+      <ul id="suggestions" class="suggestions-list"></ul>
+    </div>
+    <ul id="results"></ul>
   </main>
 
   <!-- Footer -->
