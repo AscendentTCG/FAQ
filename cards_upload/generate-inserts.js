@@ -1,18 +1,18 @@
 import fs from 'fs';
 import { parse } from 'csv-parse/sync';
 
-// Read and parse TSV file
+// Read the TSV file
 const raw = fs.readFileSync('cards.tsv', 'utf-8');
 const records = parse(raw, {
   columns: true,
   skip_empty_lines: true,
-  delimiter: '\t'
+  delimiter: '\t',
 });
 
-// Escape single quotes for SQL
+// Helper to escape single quotes for SQL
 const escapeSql = str => (str || '').replace(/'/g, "''");
 
-// Generate SQL statements
+// Build SQL output
 let output = '';
 
 records.forEach(row => {
@@ -34,7 +34,11 @@ records.forEach(row => {
     ? `ARRAY[${row.categories.split(',').map(c => `'${escapeSql(c.trim())}'`).join(', ')}]`
     : 'ARRAY[]::TEXT[]';
 
-  output += `SELECT insert_card(
+  output += `-- Delete existing card
+SELECT delete_card('${name}');
+
+-- Insert updated card
+SELECT insert_card(
   '${name}',
   ${stack_cost},
   '${card_effects}',
@@ -46,6 +50,6 @@ records.forEach(row => {
 );\n\n`;
 });
 
-// Save to output.sql (optional), or just print
+// Save output
 fs.writeFileSync('output.sql', output);
-console.log('✅ SQL generated and saved to output.sql');
+console.log('✅ SQL written to output.sql');
