@@ -33,7 +33,7 @@ Open a terminal and run:
 ```bash
 mkdir card-insert-generator
 cd card-insert-generator
-
+```
 ### 3.  📄 Add Your Exported TSV File
 From Google Sheets:
 
