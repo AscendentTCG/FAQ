@@ -1,19 +1,28 @@
 # 📦 Card Importer – Supabase Insert Generator
 
-This tool generates a list of SQL `SELECT insert_card(...)` statements from your **Google Sheets-exported `.tsv` file** so you can quickly bulk import cards into your Supabase database.
+This tool parses a `.tsv` file (exported from Google Sheets) and generates SQL statements using your existing `insert_card()` function in Supabase.
+
+It ensures clean re-insertion by calling `delete_card(card_name)` first, so you can re-import without duplicates.
+
 
 ---
 
-## ✅ How It Works
+## ✅ What It Does
 
-It reads your exported data, formats each card using your existing `insert_card` function, and produces a `.sql` file ready to paste into the Supabase SQL editor.
+For each row in your card list:
+1. Generates a `SELECT delete_card('card_name');` to clear any old entry
+2. Follows up with `SELECT insert_card(...)` to insert a fresh version
 
+Outputs all statements to `output.sql`.
 ---
 
 ## 🛠 Setup Instructions
 
 ### 1. **Update Google Sheets**
 - Use this column format exactly:
+```
+card_name stack_cost card_effects type rarity keywords tags categories
+```
 - `keywords`, `tags`, and `categories` should be **comma-separated** lists  
 - Any extra columns (like `Window`) will be ignored
 
@@ -50,14 +59,19 @@ Run it to insert all the cards into your database using your existing insert_car
 
 ### Example output 
 ```
+-- Delete existing card
+SELECT delete_card('Abandon Reason');
+
+-- Insert updated card
 SELECT insert_card(
   'Abandon Reason',
   2,
-  'Reaction: ...',
+  'Reaction: Succeed on a Melee roll...',
   'Gambit',
   'Uncommon',
-  ARRAY['Crushing Blow', 'Reaction', 'Remove'],
+  ARRAY['Reaction', 'Melee Damage', 'Remove'],
   ARRAY['Skill'],
   ARRAY['Enhance']
 );
+
 ```
