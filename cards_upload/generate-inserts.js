@@ -12,18 +12,6 @@ const records = parse(raw, {
 // Helper to escape single quotes for SQL
 const escapeSql = str => (str || '').replace(/'/g, "''");
 
-// Normalize rarity values like 'U' to 'Uncommon'
-const normalizeRarity = r => {
-  const map = {
-    'U': 'Uncommon',
-    'C': 'Common',
-    'L': 'Legendary',
-    'R': 'Rare',
-    'S': 'Stamina'
-  };
-  return map[r?.trim().toUpperCase()] || r;
-};
-
 // Build SQL output
 let output = '';
 
@@ -32,8 +20,7 @@ records.forEach(row => {
   const stack_cost = parseInt(row.stack_cost) || 0;
   const card_effects = escapeSql(row.card_effects || '');
   const type = escapeSql(row.type || '');
-  const rawRarity = row.rarity || '';
-  const rarity = escapeSql(normalizeRarity(rawRarity));
+  const rarity = escapeSql(row.rarity || '');
 
   const keywords = row.keywords
     ? `ARRAY[${row.keywords.split(',').map(k => `'${escapeSql(k.trim())}'`).join(', ')}]`
