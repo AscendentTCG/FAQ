@@ -1,63 +1,86 @@
 # 📦 Card Importer – Supabase Insert Generator
 
-This tool parses a `.tsv` file (exported from Google Sheets) and generates SQL statements using your existing `insert_card()` function in Supabase.
+This tool converts a tab-separated export of your card data into clean SQL statements that:
 
-It ensures clean re-insertion by calling `delete_card(card_name)` first, so you can re-import without duplicates.
+1. Run `delete_card(card_name)` to remove any existing entry
+2. Re-insert the card using your `insert_card(...)` function in Supabase
 
+The result is a fully copy-pasteable `output.sql` file.
 
 ---
 
 ## ✅ What It Does
 
-For each row in your card list:
-1. Generates a `SELECT delete_card('card_name');` to clear any old entry
-2. Follows up with `SELECT insert_card(...)` to insert a fresh version
-
-Outputs all statements to `output.sql`.
----
-
-## 🛠 Setup Instructions
-
-### 1. **Update Google Sheets**
-- Use this column format exactly:
-```
-card_name stack_cost card_effects type rarity keywords tags categories
-```
-- `keywords`, `tags`, and `categories` should be **comma-separated** lists  
-- Any extra columns (like `Window`) will be ignored
+- Parses your `.tsv` from Google Sheets
+- Escapes special characters safely for SQL
+- Splits `keywords`, `tags`, and `categories` into `TEXT[]` arrays
+- Outputs clean SQL for every card
 
 ---
 
-### 2. **Export as TSV**
-- Go to `File → Download → Tab-separated values (.tsv)`
-- Save the file as `cards.tsv` in this project folder
+## 🛠 How to Use It
+
+### 1. 🧰 Prerequisites
+
+Install [Node.js](https://nodejs.org/) (version 18+ recommended) if you haven’t already.
 
 ---
 
-### 3. **Install Node.js (if not already installed)**
-[Download from nodejs.org](https://nodejs.org/)
+### 2. 📁 Set Up Your Project Folder
 
----
+Open a terminal and run:
 
-### 4. **Install Dependencies**
-Run this in the terminal:
 ```bash
+mkdir card-insert-generator
+cd card-insert-generator
+
+### 3.  📄 Add Your Exported TSV File
+From Google Sheets:
+
+Make any Updates or changes to the cards table, Then:
+```
+File → Download → Tab-separated values (.tsv)
+```
+Name it
+```
+cards.tsv
+```
+Place that file into the folder.
+
+### 4. 📜 Create the Parser Script
+Create a new file named generate-inserts.js in the folder.
+Paste in generate-inserts.js code
+
+### 5. 📦 Install Dependencies
+In your terminal:
+```
+npm init -y
 npm install csv-parse
 ```
-### 5. Run the Script
-Run the following command:
-``` node generate-inserts.js```
-It will generate a file called output.sql.
+Then open package.json and add this line at the top to support ES module syntax:
+```
+"type": "module",
+```
 
-### 6. Paste into Supabase
-Open the Supabase SQL Editor
+### 6. ▶️ Run the Parser
+```
+node generate-inserts.js
+```
+This will generate:
+```
+output.sql
+```
 
-Paste the contents of output.sql
+### 7. 🧠 Import into Supabase
+Open Supabase Studio → SQL Editor, and paste in the contents of output.sql, then run it.
 
-Run it to insert all the cards into your database using your existing insert_card(...) function
+This will:
 
+Safely delete any previous version of the card
 
-### Example output 
+Insert it cleanly using insert_card(...)
+
+### Example Output
 ```
 -- Delete existing card
 SELECT delete_card('Abandon Reason');
@@ -69,9 +92,9 @@ SELECT insert_card(
   'Reaction: Succeed on a Melee roll...',
   'Gambit',
   'Uncommon',
-  ARRAY['Reaction', 'Melee Damage', 'Remove'],
+  ARRAY['Crushing Blow', 'Reaction', 'Remove'],
   ARRAY['Skill'],
   ARRAY['Enhance']
 );
-
 ```
+
