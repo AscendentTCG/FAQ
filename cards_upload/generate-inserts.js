@@ -34,6 +34,10 @@ records.forEach(row => {
     ? `ARRAY[${row.categories.split(',').map(c => `'${escapeSql(c.trim())}'`).join(', ')}]`
     : 'ARRAY[]::TEXT[]';
 
+  const card_window = row.Window
+    ? `ARRAY[${row.Window.split(',').map(num => parseInt(num.trim())).join(', ')}]`
+    : 'ARRAY[]::INT[]';
+
   output += `-- Delete existing card
 SELECT delete_card('${name}');
 
@@ -46,7 +50,8 @@ SELECT insert_card(
   '${rarity}',
   ${keywords},
   ${tags},
-  ${categories}
+  ${categories},
+  ${card_window}
 );\n\n`;
 });
 
