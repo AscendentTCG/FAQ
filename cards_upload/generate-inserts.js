@@ -20,7 +20,9 @@ records.forEach(row => {
   const stack_cost = parseInt(row.stack_cost) || 0;
   const card_effects = escapeSql(row.card_effects || '');
   const type = escapeSql(row.type || '');
-  const rarity = escapeSql(row.rarity || '');
+  
+  // 🛠️ Important fix here: if rarity missing, use 'None'
+  const rarity = escapeSql(row.rarity || 'None');
 
   const keywords = row.keywords
     ? `ARRAY[${row.keywords.split(',').map(k => `'${escapeSql(k.trim())}'`).join(', ')}]`
