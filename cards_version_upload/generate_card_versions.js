@@ -5,7 +5,7 @@ import { parse } from 'csv-parse/sync';
 const GITHUB_BASE = 'https://raw.githubusercontent.com/AscendentTCG/FAQ/images/assets/cards/images';
 const SET_NAME = 'Saqiya Festival';
 const PRINT_RUN = 'Unlimited';
-const VERSION_TYPES = ['Default', 'Foil', 'Thium', 'Special']; // For display
+const VERSION_TYPES = ['Default', 'Foil', 'Thium', 'Special'];
 const PROCESS_ONLY = ['Default']; // Only generate SQL for these
 
 // Read TSV file
@@ -18,7 +18,6 @@ const records = parse(raw, {
 
 // Helpers
 const escapeSql = str => (str || '').replace(/'/g, "''");
-
 const decodeHtmlEntities = str =>
   (str || '')
     .replace(/&c;/g, ',')
@@ -28,21 +27,17 @@ const decodeHtmlEntities = str =>
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'");
 
-const escapePath = str => encodeURIComponent(str);
-const escapeFileName = str => str.replace(/[^a-zA-Z0-9 _-]/g, '');
-
 let output = '';
 
 records.forEach(row => {
   const rawCardName = decodeHtmlEntities(row.card_name);
-  const cardName = escapeSql(rawCardName);
-  const encodedCardName = escapePath(rawCardName);
-  const safeFileName = escapeFileName(rawCardName) + '.PNG';
+  const encodedCardName = encodeURIComponent(rawCardName);     // for URL
+  const escapedCardName = escapeSql(rawCardName);              // for SQL
+  const safeFileName = rawCardName.replace(/[^a-zA-Z0-9 _-]/g, '') + '.PNG';
 
   const cardNum = parseInt(row['Card Num']) || 0;
   const flavorText = escapeSql(decodeHtmlEntities(row['Flavor Text'] || ''));
   const setName = escapeSql(SET_NAME);
-
 
   PROCESS_ONLY.forEach(type => {
     const artistRaw = row[type];
@@ -50,15 +45,17 @@ records.forEach(row => {
 
     const artist = escapeSql(artistRaw.trim());
     const versionFolder = type.toLowerCase();
+
     const imageUrl = `${GITHUB_BASE}/${encodedCardName}/${SET_NAME}/${PRINT_RUN}/${versionFolder}/${encodeURIComponent(safeFileName)}`;
+    const escapedImageUrl = escapeSql(imageUrl);
 
     output += `SELECT insert_card_version(
-  '${cardName}',
+  '${escapedCardName}',
   ${cardNum},
   '${type}',
   '${artist}',
   '${flavorText}',
-  '${imageUrl}',
+  '${escapedImageUrl}',
   '${setName}'
 );\n\n`;
   });
