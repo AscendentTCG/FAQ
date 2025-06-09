@@ -98,8 +98,7 @@ npm init -y
 npm install csv-parse
 ```
 
-Then edit `package.json` to add this:
-
+Then edit `package.json` to add this(You can add it under version.):
 ```json
 "type": "module"
 ```
