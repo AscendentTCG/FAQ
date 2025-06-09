@@ -38,7 +38,7 @@ records.forEach(row => {
 
   const cardNum = parseInt(row['Card Num']) || 0;
   const flavorText = escapeSql(decodeHtmlEntities(row['Flavor Text'] || ''));
-  const setName = escapeSql(SET_NAME);
+  const fullSetName = escapeSql(`${SET_NAME} ${PRINT_RUN}`);
 
   PROCESS_ONLY.forEach(type => {
     const artistRaw = row[type];
@@ -57,7 +57,7 @@ records.forEach(row => {
   '${artist}',
   '${flavorText}',
   '${escapedImageUrl}',
-  '${setName}'
+  '${fullSetName}'
 );\n\n`;
   });
 });
