@@ -127,20 +127,11 @@ insert_versions.sql
 3. Paste the contents of `insert_versions.sql`  
 4. Run the SQL to insert your card versions
 
----
-
-## 📝 Example TSV Row
-
-| card_name       | Card Num | Default    | Foil | Thium     | Special | Flavor Text                          |
-|------------------|----------|------------|------|-----------|---------|--------------------------------------|
-| Abandon Reason   | 3        | Collin Ha  |      | Collin Ha |         | My brain says no&c; but my body says yes. |
-
----
 
 ## ✅ Example Output SQL
 
 ```sql
--- Abandon Reason [Default: ✔, Foil: ✘, Thium: ✔, Special: ✘]
+-- Abandon Reason [Default: ✔, Foil: ✘, Thium: ✘, Special: ✘]
 SELECT insert_card_version(
   'Abandon Reason',
   3,
