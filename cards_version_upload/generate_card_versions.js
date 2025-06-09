@@ -6,7 +6,7 @@ const GITHUB_BASE = 'https://raw.githubusercontent.com/AscendentTCG/FAQ/images/a
 const SET_NAME = 'Saqiya Festival';
 const PRINT_RUN = 'Unlimited';
 const VERSION_TYPES = ['Default', 'Foil', 'Thium', 'Special'];
-const PROCESS_ONLY = ['Default']; // Only generate SQL for these
+const PROCESS_ONLY = ['Default'];
 
 // Read TSV file
 const raw = fs.readFileSync('card_versions.tsv', 'utf-8');
@@ -18,6 +18,7 @@ const records = parse(raw, {
 
 // Helpers
 const escapeSql = str => (str || '').replace(/'/g, "''");
+
 const decodeHtmlEntities = str =>
   (str || '')
     .replace(/&c;/g, ',')
@@ -31,8 +32,8 @@ let output = '';
 
 records.forEach(row => {
   const rawCardName = decodeHtmlEntities(row.card_name);
-  const encodedCardName = encodeURIComponent(rawCardName);     // for URL
-  const escapedCardName = escapeSql(rawCardName);              // for SQL
+  const encodedCardName = encodeURIComponent(rawCardName);      // for URL path
+  const escapedCardName = escapeSql(rawCardName);               // for SQL
   const safeFileName = rawCardName.replace(/[^a-zA-Z0-9 _-]/g, '') + '.PNG';
 
   const cardNum = parseInt(row['Card Num']) || 0;
@@ -61,6 +62,6 @@ records.forEach(row => {
   });
 });
 
-// Write to file
+// Write SQL file
 fs.writeFileSync('insert_versions.sql', output);
 console.log(' SQL written to insert_versions.sql');
