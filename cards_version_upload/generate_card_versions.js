@@ -43,13 +43,6 @@ records.forEach(row => {
   const flavorText = escapeSql(decodeHtmlEntities(row['Flavor Text'] || ''));
   const setName = escapeSql(SET_NAME);
 
-  // Add comment for all categories
-  output += `-- ${cardName} [`;
-  output += VERSION_TYPES.map(v => {
-    const val = row[v] && row[v].trim() ? '✔' : '✘';
-    return `${v}: ${val}`;
-  }).join(', ');
-  output += `]\n`;
 
   PROCESS_ONLY.forEach(type => {
     const artistRaw = row[type];
