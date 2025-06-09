@@ -2,7 +2,7 @@ import fs from 'fs';
 import { parse } from 'csv-parse/sync';
 
 // Constants
-const GITHUB_BASE = 'https://raw.githubusercontent.com/AscendentTCG/FAQ/images/assets/cards/images';
+const GITHUB_BASE = 'https://raw.githubusercontent.com/AscendentTCG/FAQ/main/assets/cards/images';
 const SET_NAME = 'Saqiya Festival';
 const PRINT_RUN = 'Unlimited';
 const VERSION_TYPES = ['Default', 'Foil', 'Thium', 'Special'];
