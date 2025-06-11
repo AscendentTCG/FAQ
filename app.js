@@ -108,7 +108,7 @@ window.onload = () => {
       `)
       .eq("card_id", card.id);
 
-    const card = cards[0];
+    card = cards[0];
     const version = card.card_versions?.[0];
     const imageUrl = version?.card_art?.[0]?.image_url;
 
