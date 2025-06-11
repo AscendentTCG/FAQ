@@ -109,6 +109,8 @@ window.onload = () => {
         keyword:keywords!keyword_id ( keyword, description )
       `)
       .eq("card_id", card.id);
+    console.log("Keyword Data:", keywordData);
+
 
     const version = card.card_versions?.[0];
     const imageUrl = version?.card_art?.[0]?.image_url;
