@@ -96,6 +96,17 @@ window.onload = () => {
       resultsList.innerHTML = `<li class="no-results">No results found</li>`;
       return;
     }
+    
+    const card = cards[0];
+    
+    //Load Keywords
+    const { data: keywordData } = await supabaseClient
+      .from("card_keywords")
+      .select(`
+        keyword,
+        keywords ( description )
+      `)
+      .eq("card_id", card.id);
 
     const card = cards[0];
     const version = card.card_versions?.[0];
