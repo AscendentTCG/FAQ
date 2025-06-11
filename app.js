@@ -101,12 +101,12 @@ window.onload = () => {
 
     const card = cards[0];
 
-    // Load Keywords for the card
+    // Load Keywords for the card with correct foreign key structure
     const { data: keywordData } = await supabaseClient
       .from("card_keywords")
       .select(`
-        keyword,
-        keywords ( description )
+        keyword_id,
+        keywords ( keyword, description )
       `)
       .eq("card_id", card.id);
 
@@ -178,7 +178,7 @@ window.onload = () => {
 
       keywordData.forEach(entry => {
         const item = document.createElement("li");
-        item.innerHTML = `<strong>${entry.keyword}:</strong> ${entry.keywords?.description || "No description available."}`;
+        item.innerHTML = `<strong>${entry.keywords?.keyword || "(unknown)"}:</strong> ${entry.keywords?.description || "No description available."}`;
         keywordList.appendChild(item);
       });
 
