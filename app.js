@@ -106,7 +106,9 @@ window.onload = () => {
       .from("card_keywords")
       .select(`
         keyword_id,
-        keyword:keywords!keyword_id ( keyword, description )
+        keyword:keywords!fk_keyword (
+          keyword, description
+        )
       `)
       .eq("card_id", card.id);
 
