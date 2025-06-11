@@ -168,9 +168,27 @@ window.onload = () => {
     // Mechanics
     const mechSection = document.createElement("div");
     mechSection.classList.add("mechanics-section");
-    mechSection.textContent = "Mechanics info coming soon.";
     mechSection.style.display = "none";
+    
+    // Add keyword info
+    if (keywordData?.length) {
+      const keywordList = document.createElement("ul");
+      keywordList.classList.add("keyword-list");
+    
+      keywordData.forEach(entry => {
+        const item = document.createElement("li");
+        item.innerHTML = `<strong>${entry.keyword}:</strong> ${entry.keywords?.description || "No description available."}`;
+        keywordList.appendChild(item);
+      });
+    
+      mechSection.innerHTML = "<strong>Keywords:</strong>";
+      mechSection.appendChild(keywordList);
+    } else {
+      mechSection.textContent = "No mechanics available.";
+    }
+    
     li.appendChild(mechSection);
+
 
     // Card Info
     const infoSection = document.createElement("div");
