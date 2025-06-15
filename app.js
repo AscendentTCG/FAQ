@@ -196,7 +196,7 @@ window.onload = () => {
     // Card Info Section
     const infoSection = document.createElement("div");
     infoSection.classList.add("mechanics-section");
-    infoSection.innerHTML = `<strong>Card Text:</strong><br>${card.card_effects || "No text available."}`;
+    infoSection.innerHTML = `<strong>Card Text:</strong><br>${(card.card_effects || "No text available.").split("&n;").join("<br>")}`;
     infoSection.style.display = "none";
     li.appendChild(infoSection);
 
