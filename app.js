@@ -180,9 +180,10 @@ window.onload = () => {
 
       keywordData.forEach(entry => {
         const item = document.createElement("li");
-        item.innerHTML = `<strong>${entry.keyword?.keyword || "(unknown)"}:</strong> ${entry.keyword?.description || "No description available."}`;
+        item.innerHTML = `<strong>${entry.keyword || "(unknown)"}:</strong> ${entry.description || "No description available."}`;
         keywordList.appendChild(item);
       });
+
 
       mechSection.innerHTML = "<strong>Keywords:</strong>";
       mechSection.appendChild(keywordList);
