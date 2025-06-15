@@ -102,15 +102,15 @@ window.onload = () => {
     const card = cards[0];
 
     // Load Keywords with correct aliasing
-    const { data: keywordData } = await supabaseClient
-      .from("card_keywords")
-      .select(`
-        keyword_id,
-        keyword:keywords!fk_keyword (
-          keyword, description
-        )
-      `)
-      .eq("card_id", card.id);
+    const { data: keywordData, error } = await supabaseClient
+      .rpc("get_card_keywords_with_description", {
+        p_card_id: card.id,
+      });
+    
+    if (error) {
+      console.error("Keyword fetch error:", error);
+    }
+
 
     const version = card.card_versions?.[0];
     const imageUrl = version?.card_art?.[0]?.image_url;
