@@ -196,9 +196,18 @@ window.onload = () => {
     // Card Info Section
     const infoSection = document.createElement("div");
     infoSection.classList.add("mechanics-section");
-    infoSection.innerHTML = `<strong>Card Text:</strong><br>${(card.card_effects || "No text available.").split("&n;").join("<br>")}`;
+    
+    const formattedText = (card.card_effects || "")
+      .split("&n;")
+      .map(line => line.trim())
+      .filter(Boolean)
+      .join("<br>");
+    
+    infoSection.innerHTML = `<strong>Card Text:</strong><br>${formattedText}`;
     infoSection.style.display = "none";
+    
     li.appendChild(infoSection);
+
 
     // Toggle behavior between sections
     faqBtn.addEventListener("click", () => {
