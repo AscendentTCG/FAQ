@@ -198,10 +198,11 @@ window.onload = () => {
     infoSection.classList.add("mechanics-section");
     
     const formattedText = (card.card_effects || "")
-      .split("&n;")
+      .split(/&n\s*/g)     // <-- ✅ handles &n and &n followed by any spaces
       .map(line => line.trim())
       .filter(Boolean)
       .join("<br>");
+
     
     infoSection.innerHTML = `<strong>Card Text:</strong><br>${formattedText}`;
     infoSection.style.display = "none";
