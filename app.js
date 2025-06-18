@@ -1,3 +1,4 @@
+// Runs after the page loads
 window.onload = () => {
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
@@ -9,7 +10,7 @@ window.onload = () => {
 
   const supabaseClient = window.supabaseClient;
 
-  // Autocomplete
+  // Autocomplete feature
   searchInput.addEventListener("input", async () => {
     const query = searchInput.value.trim();
     suggestionsList.innerHTML = "";
@@ -39,7 +40,7 @@ window.onload = () => {
     });
   });
 
-  // Arrow nav + Enter
+  // Keyboard navigation and Enter key functionality
   searchInput.addEventListener("keydown", (e) => {
     const suggestions = suggestionsList.querySelectorAll("li");
 
@@ -66,12 +67,13 @@ window.onload = () => {
     });
   });
 
+  // Search button click
   searchBtn.addEventListener("click", () => {
     suggestionsList.innerHTML = "";
     searchCards(searchInput.value.trim());
   });
 
-  // Global function
+  // Main function to fetch and display card data
   window.searchCards = async (cardName) => {
     if (!cardName) return;
 
@@ -98,6 +100,18 @@ window.onload = () => {
     }
 
     const card = cards[0];
+
+    // Load Keywords with correct aliasing
+    const { data: keywordData, error } = await supabaseClient
+      .rpc("get_card_keywords_with_description", {
+        p_card_id: card.id,
+      });
+    
+    if (error) {
+      console.error("Keyword fetch error:", error);
+    }
+
+
     const version = card.card_versions?.[0];
     const imageUrl = version?.card_art?.[0]?.image_url;
 
@@ -112,6 +126,7 @@ window.onload = () => {
       li.appendChild(img);
     }
 
+    // Toggle buttons for FAQ, Mechanics, and Card Info
     const toggleWrapper = document.createElement("div");
     toggleWrapper.classList.add("toggle-wrapper");
 
@@ -132,7 +147,7 @@ window.onload = () => {
     toggleWrapper.appendChild(infoBtn);
     li.appendChild(toggleWrapper);
 
-    // FAQ
+    // FAQ Section
     const { data: faqs } = await supabaseClient.rpc("get_card_faqs", {
       p_card_name: card.name,
     });
@@ -154,21 +169,48 @@ window.onload = () => {
 
     li.appendChild(faqSection);
 
-    // Mechanics
+    // Mechanics Section
     const mechSection = document.createElement("div");
     mechSection.classList.add("mechanics-section");
-    mechSection.textContent = "Mechanics info coming soon.";
     mechSection.style.display = "none";
+
+    if (keywordData?.length) {
+      const keywordList = document.createElement("ul");
+      keywordList.classList.add("keyword-list");
+
+      keywordData.forEach(entry => {
+        const item = document.createElement("li");
+        item.innerHTML = `<strong>${entry.keyword || "(unknown)"}:</strong> ${entry.description || "No description available."}`;
+        keywordList.appendChild(item);
+      });
+
+
+      mechSection.innerHTML = "<strong>Keywords:</strong>";
+      mechSection.appendChild(keywordList);
+    } else {
+      mechSection.textContent = "No mechanics available.";
+    }
+
     li.appendChild(mechSection);
 
-    // Card Info
+    // Card Info Section
     const infoSection = document.createElement("div");
     infoSection.classList.add("mechanics-section");
-    infoSection.innerHTML = `<strong>Card Text:</strong><br>${card.card_effects || "No text available."}`;
+    
+    const formattedText = (card.card_effects || "")
+      .split(/&n\s*/g)     // <-- ✅ handles &n and &n followed by any spaces
+      .map(line => line.trim())
+      .filter(Boolean)
+      .join("<br>");
+
+    
+    infoSection.innerHTML = `<strong>Card Text:</strong><br>${formattedText}`;
     infoSection.style.display = "none";
+    
     li.appendChild(infoSection);
 
-    // Toggle behavior
+
+    // Toggle behavior between sections
     faqBtn.addEventListener("click", () => {
       faqBtn.classList.add("active");
       mechBtn.classList.remove("active");
@@ -199,7 +241,7 @@ window.onload = () => {
     resultsList.appendChild(li);
   };
 
-  // Load from ?card= param
+  // Automatically load card from URL param if provided
   const urlParams = new URLSearchParams(window.location.search);
   const cardFromUrl = urlParams.get("card");
   if (cardFromUrl) {
