@@ -276,15 +276,33 @@ h1, h2 {
   color: #000;
 }
 
-/* card gameplay */
+
+/*layout for Basic Gameplay page */
+.page-basic-gameplay {
+  padding-top: 48px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.page-basic-gameplay h1 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.page-basic-gameplay .subtitle {
+  text-align: center;
+  font-size: 1.1em;
+  color: #444;
+  margin-bottom: 32px; 
+}
 
 .page-basic-gameplay .video-container {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 ratio */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
   max-width: 100%;
-  margin: 0 auto 40px;
+  border-radius: 8px;
 }
 
 .page-basic-gameplay .video-container iframe {
@@ -294,21 +312,8 @@ h1, h2 {
   width: 100%;
   height: 100%;
   border-radius: 8px;
+  border: none;
 }
-
-.page-basic-gameplay .subtitle {
-  text-align: center;
-  font-size: 1.1em;
-  color: #444;
-  margin-bottom: 40px;
-}
-
-.page-basic-gameplay main.container {
-  padding-top: 48px;
-}
-
-
-
 
 
 /* Section Visibility Control */
