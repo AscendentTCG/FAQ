@@ -277,13 +277,6 @@ h1, h2 {
 }
 
 /* card gameplay */
-.video-container {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0;
-  overflow: hidden;
-  margin: 1em 0;
-}
 
 .page-basic-gameplay .video-container {
   position: relative;
