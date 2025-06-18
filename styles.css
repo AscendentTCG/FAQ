@@ -295,18 +295,18 @@ h1, h2 {
   height: 100%;
   border-radius: 8px;
 }
-.nav-list a {
-  font-weight: bold;
-  padding: 10px 16px;
-  display: inline-block;
-  text-decoration: none;
-  color: #222;
-  transition: color 0.2s ease;
+
+.page-basic-gameplay .subtitle {
+  text-align: center;
+  font-size: 1.1em;
+  color: #444;
+  margin-bottom: 24px;
 }
 
-.nav-list a:hover {
-  color: #555;
+.page-basic-gameplay main.container {
+  padding-top: 48px;
 }
+
 
 
 
